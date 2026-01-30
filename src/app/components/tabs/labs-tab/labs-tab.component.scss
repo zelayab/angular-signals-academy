@@ -1,0 +1,134 @@
+.labs-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.labs-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lab-select-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.select-lab {
+  width: 16rem;
+  max-width: 100%;
+}
+
+.description-card {
+  padding: 1rem;
+}
+
+.desc-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.5rem 0;
+}
+
+.desc-text {
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.desc-objective {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0.5rem 0 0 0;
+}
+
+.playground {
+  display: grid;
+  gap: 1rem;
+
+  &.three-cols {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  &.playground-ide {
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+  }
+
+  @media (max-width: 1200px) {
+    &.three-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    &.playground-ide {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &.three-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Estilos adicionales del labs-tab (detalle) — el resto está en styles.scss bajo .labs-tab */
+.preview-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted-foreground);
+  pointer-events: none;
+  .btn { pointer-events: auto; }
+  p { margin: 0; }
+}
+.preview-loading { color: var(--primary); }
+.preview-error { color: var(--destructive, #ef4444); font-size: 0.8125rem; text-align: center; max-width: 90%; }
+.preview-embed-container { border-radius: var(--radius-sm); overflow: hidden; background: var(--secondary); }
+
+.console-panel.console-hint { min-height: auto; max-height: none; padding: 0.5rem 1rem; }
+.console-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem 0.5rem 0 0; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.btn-icon {
+  display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0;
+  border: none; border-radius: var(--radius-sm); background: transparent; color: var(--muted-foreground);
+  cursor: pointer; transition: background var(--transition), color var(--transition);
+  &:hover:not(:disabled) { background: var(--muted); color: var(--foreground); }
+  &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ring); }
+}
+.editor-body.monaco-wrapper { display: block; min-height: 320px; app-monaco-editor, .monaco-container { height: 100%; min-height: 320px; } }
+.labs-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.lab-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+.other-labs { padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.other-title { font-size: 1.125rem; font-weight: 600; color: var(--foreground); margin: 0 0 1rem 0; }
+.select-lab { width: 16rem; max-width: 100%; }
+
+.editor-tab {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+  font-family: ui-monospace, monospace;
+  color: var(--muted-foreground);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--secondary);
+  &.active { color: var(--foreground); background: var(--card); border-color: var(--border); }
+}
+.editor-footer {
+  padding: 0.35rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--secondary);
+  font-size: 0.6875rem;
+  &.editor-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+}
+.panel-badge.editable { color: var(--primary); margin-left: auto; }
+.preview-label { font-size: 0.8125rem; font-weight: 600; color: var(--foreground); }
+.preview-hint { flex: 1; font-size: 0.75rem; color: var(--muted-foreground); }
+.console-line.muted { font-style: italic; }

@@ -1,0 +1,46 @@
+<div class="app-root" [class.light]="!darkMode()">
+  <a href="#main-content" class="skip-link">Ir al contenido principal</a>
+  <div class="layout">
+    <app-app-header />
+
+    <div class="body-row">
+      <app-app-sidebar />
+      <main id="main-content" class="main" [class.focus-mode]="focusMode()" tabindex="-1">
+        <div class="tab-bar glass">
+          <div class="tab-bar-inner">
+            <app-mobile-nav />
+            <nav class="tabs" role="tablist">
+              @for (tab of tabs; track tab.id) {
+                <button
+                  type="button"
+                  role="tab"
+                  [attr.aria-selected]="activeTab() === tab.id"
+                  class="tab-btn"
+                  [class.active]="activeTab() === tab.id"
+                  (click)="setTab(tab.id)"
+                >
+                  <span class="tab-label-full">{{ tab.label }}</span>
+                  <span class="tab-label-short">{{ tab.shortLabel }}</span>
+                </button>
+              }
+            </nav>
+          </div>
+        </div>
+
+        <div class="tab-content">
+          @switch (activeTab()) {
+            @case ('lecciones') {
+              <app-lessons-tab />
+            }
+            @case ('labs') {
+              <app-labs-tab />
+            }
+            @case ('quiz') {
+              <app-quiz-tab />
+            }
+          }
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

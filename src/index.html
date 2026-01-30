@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Signals Academy | Aprende Angular Signals</title>
+  <base href="/">
+  <!-- Si la URL tiene ruta incorrecta (ej. título en la barra), volver a la raíz para que cargue main.js -->
+  <script>
+    if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+      window.location.replace(window.location.origin + '/');
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Estilos críticos: visibles aunque falle la carga del bundle -->
+  <style>
+    html, body { margin: 0; min-height: 100vh; background-color: #0f172a !important; color: #f1f5f9 !important; font-family: system-ui, sans-serif; }
+    app-root-shell { display: block !important; min-height: 100vh; background-color: #0f172a !important; color: #f1f5f9 !important; }
+  </style>
+</head>
+<body>
+  <app-root-shell>
+    <p style="padding: 2rem; color: #f1f5f9; margin: 0;">Cargando Signals Academy…</p>
+  </app-root-shell>
+  <!-- Si hay error al cargar la app, se muestra en pantalla -->
+  <script>
+    window.addEventListener('error', function(e) {
+      var root = document.querySelector('app-root-shell');
+      if (root && root.querySelector('p')) {
+        root.innerHTML = '<div style="padding:2rem;color:#f87171;font-family:monospace;white-space:pre-wrap">Error: ' + (e.message || e) + '\n\nRevisa la consola (F12) para más detalles.</div>';
+      }
+    });
+  </script>
+</body>
+</html>

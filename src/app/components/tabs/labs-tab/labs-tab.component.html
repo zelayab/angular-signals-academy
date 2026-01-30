@@ -1,0 +1,104 @@
+<div class="labs-tab">
+  <div class="labs-header">
+    <div class="lab-select-row">
+      <select
+        class="input select-lab"
+        [value]="selectedLab().id"
+        (change)="onLabSelect($any($event.target).value)"
+      >
+        @for (lab of labs; track lab.id) {
+          <option [value]="lab.id">{{ lab.title }}</option>
+        }
+      </select>
+      <span class="badge badge-outline" [class.badge-accent]="selectedLab().difficulty === 'básico'" [class.badge-primary]="selectedLab().difficulty === 'intermedio'" [class.badge-destructive]="selectedLab().difficulty === 'avanzado'">
+        {{ selectedLab().difficulty }}
+      </span>
+    </div>
+  </div>
+
+  <div class="glass-card description-card">
+    <h2 class="desc-title">{{ selectedLab().title }}</h2>
+    <p class="desc-text">{{ selectedLab().description }}</p>
+    <p class="desc-objective"><strong>Objetivo:</strong> {{ selectedLab().expectedOutput }}</p>
+  </div>
+
+  <div class="playground playground-ide">
+    <div class="glass-card editor-panel">
+      <div class="editor-tabs">
+        <span class="editor-tab active">component.ts</span>
+      </div>
+      <div class="editor-body monaco-wrapper">
+        <app-monaco-editor
+          [value]="editorCode()"
+          [resetKey]="selectedLab().id"
+          (valueChange)="editorCode.set($event)"
+        />
+      </div>
+      <div class="editor-footer editor-actions">
+        <button type="button" class="btn btn-outline btn-sm" (click)="restoreCode()">
+          Restaurar código
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="runHere()" title="Ejecuta tu código aquí en un iframe">
+          Ejecutar aquí
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="runInStackBlitz()" title="Abre en StackBlitz en una pestaña nueva">
+          Abrir en StackBlitz
+        </button>
+        <span class="panel-badge editable" title="Edita el código y ejecútalo aquí o en StackBlitz.">Editable</span>
+      </div>
+    </div>
+
+    <div class="glass-card preview-panel">
+      <div class="preview-toolbar">
+        <span class="preview-label">Preview</span>
+        <span class="preview-hint">Tu código se ejecuta aquí (iframe StackBlitz). Pulsa «Ejecutar aquí».</span>
+      </div>
+      <div class="preview-content">
+        <div class="preview-embed-wrapper">
+          <div [id]="embedContainerId" class="preview-embed-container" role="region" aria-label="Vista previa de tu código"></div>
+          @if (!hasEmbed()) {
+            <div class="preview-placeholder">
+              @if (isEmbedLoading()) {
+                <p class="preview-loading">Cargando preview…</p>
+              } @else if (embedError()) {
+                <p class="preview-error">{{ embedError() }}</p>
+                <button type="button" class="btn btn-outline btn-sm" (click)="runHere()">Reintentar</button>
+              } @else {
+                <p>Pulsa «Ejecutar aquí» para ver tu código.</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="console-panel console-hint">
+        <p class="console-line muted">Los <strong>console.log</strong> de tu código aparecen en la barra bajo el preview (consola de StackBlitz). Puedes expandirla para ver logs y errores.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="other-labs">
+    <h3 class="other-title">Otros laboratorios</h3>
+    <div class="labs-grid">
+      @for (lab of labs; track lab.id) {
+        <button
+          type="button"
+          class="glass-card lab-card"
+          [class.active]="selectedLab().id === lab.id"
+          (click)="selectLab(lab)"
+        >
+          <div class="lab-card-top">
+            <span class="badge badge-outline" [class.badge-accent]="lab.difficulty === 'básico'" [class.badge-primary]="lab.difficulty === 'intermedio'" [class.badge-destructive]="lab.difficulty === 'avanzado'">
+              {{ lab.difficulty }}
+            </span>
+            @if (selectedLab().id === lab.id) {
+              <span class="check">✓</span>
+            }
+          </div>
+          <h4 class="lab-card-title">{{ lab.title }}</h4>
+          <p class="lab-card-desc">{{ lab.description }}</p>
+          <span class="lab-card-category">{{ lab.category }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>

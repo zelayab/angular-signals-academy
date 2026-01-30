@@ -1,0 +1,103 @@
+<header class="app-header glass">
+  <div class="header-inner">
+    <a
+      routerLink="/"
+      class="brand brand-link"
+      (click)="goHome()"
+      aria-label="Ir al inicio"
+    >
+      <div class="brand-icon glow-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="brand-text hidden-sm">
+        <h1 class="text-gradient">Signals Academy</h1>
+        <p class="muted">Angular Signals Mastery</p>
+      </div>
+    </a>
+
+    <div class="search-wrap hidden-md" [class.has-value]="searchQuery().length > 0" [class.focused]="searchFocused()">
+      <span class="search-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
+      <input
+        #searchInput
+        type="search"
+        class="search-input"
+        placeholder="Buscar lecciones, conceptos..."
+        [value]="searchQuery()"
+        (input)="onSearchChange($any($event.target).value)"
+        (focus)="searchFocused.set(true)"
+        (blur)="searchFocused.set(false)"
+        [attr.aria-label]="'Buscar en Signals Academy'"
+        autocomplete="off"
+      />
+      @if (searchQuery().length > 0) {
+        <button
+          type="button"
+          class="search-clear"
+          (click)="clearSearch(); searchInput.focus()"
+          aria-label="Borrar búsqueda"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      }
+      <span class="search-shortcut" aria-hidden="true"><kbd>⌘K</kbd></span>
+    </div>
+
+    <div class="actions">
+      <button
+        type="button"
+        class="btn"
+        [class.btn-primary]="focusMode()"
+        [class.glow-primary]="focusMode()"
+        [class.btn-outline]="!focusMode()"
+        (click)="toggleFocus()"
+        title="Modo enfoque"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span class="hidden-sm">Modo enfoque</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="toggleDark()"
+        [attr.aria-label]="darkMode() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+      >
+        @if (darkMode()) {
+          <span aria-hidden="true">🌙</span>
+          <span class="hidden-sm">Oscuro</span>
+        } @else {
+          <span aria-hidden="true">☀️</span>
+          <span class="hidden-sm">Claro</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <div class="search-mobile visible-md" [class.has-value]="searchQuery().length > 0">
+    <span class="search-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </span>
+    <input
+      #searchInputMobile
+      type="search"
+      class="search-input"
+      placeholder="Buscar lecciones..."
+      [value]="searchQuery()"
+      (input)="onSearchChange($any($event.target).value)"
+      aria-label="Buscar en Signals Academy"
+      autocomplete="off"
+    />
+    @if (searchQuery().length > 0) {
+      <button
+        type="button"
+        class="search-clear"
+        (click)="clearSearch()"
+        aria-label="Borrar búsqueda"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    }
+  </div>
+</header>

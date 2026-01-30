@@ -1,0 +1,41 @@
+<button
+  type="button"
+  class="btn btn-ghost btn-icon mobile-trigger"
+  (click)="toggle()"
+  aria-label="Abrir menú de navegación"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+</button>
+
+@if (open()) {
+  <div class="mobile-overlay" (click)="toggle()" role="button" tabindex="0" aria-label="Cerrar menú"></div>
+  <aside class="mobile-sheet glass">
+    <div class="sheet-header">
+      <h2 class="sheet-title">Secciones</h2>
+      <button type="button" class="btn btn-ghost btn-icon" (click)="toggle()" aria-label="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <nav class="sheet-nav">
+      <ul>
+        @for (item of sections; track item.id) {
+          <li>
+            <button
+              type="button"
+              class="nav-item"
+              [class.active]="activeSection() === item.id"
+              (click)="selectItem(item)"
+            >
+              <div class="nav-icon">
+                <app-icon [name]="item.icon"></app-icon>
+              </div>
+              <div class="nav-content">
+                <span class="label-text">{{ item.label }}</span>
+              </div>
+            </button>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+}

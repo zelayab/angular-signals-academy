@@ -1,0 +1,128 @@
+@if (selectedLesson(); as lesson) {
+  <app-lesson-detail [lesson]="lesson" (back)="back()" />
+} @else if (showHomeScreen()) {
+  <div class="home-screen">
+    <div class="home-hero">
+      <h1 class="home-title">Signals Academy</h1>
+      <p class="home-subtitle">Aprende Angular Signals con lecciones, labs interactivos y quiz.</p>
+    </div>
+    <div class="home-actions">
+      <button type="button" class="btn btn-primary glow-primary home-btn" (click)="showLessonsList()">
+        <span>Explorar lecciones</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <button type="button" class="btn btn-outline home-btn" (click)="goToLabs()">
+        <span>Labs interactivos</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/></svg>
+      </button>
+      <button type="button" class="btn btn-outline home-btn" (click)="goToQuiz()">
+        <span>Quiz</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
+    </div>
+    <p class="home-hint">Usa el menú lateral para cambiar de sección o el buscador del header.</p>
+  </div>
+} @else if (showRecursosView()) {
+  <div class="recursos-wrap">
+    <div class="section-header">
+      <h2 class="section-title">Recursos</h2>
+      <p class="section-meta">Enlaces oficiales y comunidad para seguir aprendiendo Signals</p>
+    </div>
+    <div class="recursos-grid">
+      @for (res of resources; track res.id) {
+        <a
+          [href]="res.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="recurso-card glass-card"
+        >
+          <h3 class="card-title">{{ res.title }}</h3>
+          <p class="card-desc">{{ res.description }}</p>
+          <div class="card-cta">
+            <span>Abrir enlace</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+} @else if (filteredLessons().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2"/></svg>
+    </div>
+    <h3 class="empty-title">
+      {{ searchQuery() ? 'No se encontraron lecciones' : 'Sin lecciones disponibles' }}
+    </h3>
+    <p class="empty-desc">
+      {{ searchQuery() ? 'No hay resultados para "' + searchQuery() + '" en esta sección.' : 'Esta sección aún no tiene lecciones. Explora otras secciones o visita los Labs.' }}
+    </p>
+  </div>
+} @else {
+  <div class="lessons-wrap">
+    <div class="section-header">
+      <h2 class="section-title">{{ getSectionLabel(activeSection()) }}</h2>
+      <p class="section-meta">
+        {{ filteredLessons().length }} {{ filteredLessons().length === 1 ? 'lección' : 'lecciones' }} disponibles
+      </p>
+    </div>
+
+    @if (availableTags().length > 0) {
+      <div class="tag-filter-wrap" role="group" aria-label="Filtrar por tag">
+        <div class="tag-filter-scroll">
+          <button
+            type="button"
+            class="tag-filter-item"
+            [class.is-active]="!selectedTag()"
+            (click)="clearTagFilter()"
+          >
+            Todos
+          </button>
+          @for (tag of availableTags(); track tag) {
+            <button
+              type="button"
+              class="tag-filter-item"
+              [class.is-active]="selectedTag() === tag"
+              (click)="setTagFilter(tag)"
+            >
+              {{ tag }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="lessons-grid">
+      @for (lesson of filteredLessons(); track lesson.id) {
+        <button
+          type="button"
+          class="lesson-card glass-card"
+          (click)="selectLesson(lesson)"
+        >
+          <div class="card-top">
+            <span class="badge badge-outline" [class.badge-accent]="lesson.difficulty === 'básico'" [class.badge-primary]="lesson.difficulty === 'intermedio'" [class.badge-destructive]="lesson.difficulty === 'avanzado'">
+              {{ lesson.difficulty }}
+            </span>
+          </div>
+          <h3 class="card-title">{{ lesson.title }}</h3>
+          <p class="card-desc">{{ lesson.description }}</p>
+          <div class="card-meta">
+            <span class="meta-duration">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              {{ lesson.duration }}
+            </span>
+            <div class="meta-tags">
+              @for (tag of lesson.tags; track tag) {
+                <span class="tag" [ngClass]="getTagColor(tag)">{{ tag }}</span>
+              }
+            </div>
+          </div>
+          <div class="card-cta">
+            <span>Ver lección</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+        </button>
+      }
+    </div>
+  </div>
+}

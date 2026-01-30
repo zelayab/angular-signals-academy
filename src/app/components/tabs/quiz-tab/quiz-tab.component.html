@@ -1,0 +1,158 @@
+@if (quizCompleted()) {
+  <div class="quiz-completed glass-card">
+    <div class="trophy-wrap" [class.high]="scorePercentage() >= 80" [class.medium]="scorePercentage() >= 50 && scorePercentage() < 80" [class.low]="scorePercentage() < 50">
+      🏆
+    </div>
+    <h2 class="completed-title">¡Quiz completado!</h2>
+    <p class="completed-module">{{ selectedModule().name }}</p>
+    <div class="stats-row">
+      <div class="stat">
+        <p class="stat-value primary">{{ correctCount() }}</p>
+        <p class="stat-label">Correctas</p>
+      </div>
+      <div class="stat">
+        <p class="stat-value">{{ totalQuestions() - correctCount() }}</p>
+        <p class="stat-label">Incorrectas</p>
+      </div>
+      <div class="stat">
+        <p class="stat-value" [class.high]="scorePercentage() >= 80" [class.medium]="scorePercentage() >= 50 && scorePercentage() < 80" [class.low]="scorePercentage() < 50">
+          {{ scorePercentage() }}%
+        </p>
+        <p class="stat-label">Puntuación</p>
+      </div>
+    </div>
+    @if (scorePercentage() < 100) {
+      <div class="recommendations glass-subtle">
+        <h3>Recomendaciones</h3>
+        <p>
+          {{ scorePercentage() >= 80 ? '¡Excelente trabajo! Revisa los errores para perfeccionar tu conocimiento.' : scorePercentage() >= 50 ? 'Buen intento. Te recomendamos repasar las lecciones relacionadas con tus errores.' : 'Te sugerimos volver a las lecciones antes de intentar el quiz de nuevo.' }}
+        </p>
+      </div>
+    }
+    <div class="completed-module-pills glass-subtle">
+      <span class="completed-pills-label">Otros quizzes:</span>
+      <div class="module-pills">
+        @for (mod of modules; track mod.id) {
+          <button
+            type="button"
+            class="module-pill glass-card"
+            [class.active]="selectedModule().id === mod.id"
+            (click)="selectModule(mod.id)"
+          >
+            <span class="module-pill-name">{{ mod.name }}</span>
+            <span class="module-pill-count">{{ mod.questions.length }} preguntas</span>
+          </button>
+        }
+      </div>
+    </div>
+    <div class="completed-actions">
+      <button type="button" class="btn btn-outline" (click)="retry()">↩ Reintentar</button>
+      @if (correctCount() < totalQuestions()) {
+        <button type="button" class="btn btn-outline" (click)="reviewErrors()">⚠ Repasar errores</button>
+      }
+      <button type="button" class="btn btn-primary glow-primary" (click)="goToNextModule()">
+        {{ hasNextModule() ? 'Siguiente módulo' : 'Elegir otro quiz' }} →
+      </button>
+    </div>
+  </div>
+} @else if (currentQuestion(); as q) {
+  <div class="quiz-active">
+    <div class="quiz-intro glass-subtle">
+      <h2 class="quiz-intro-title">Quiz</h2>
+      <p class="quiz-intro-desc">Elige un módulo y responde las preguntas para afianzar lo aprendido.</p>
+    </div>
+    <div class="quiz-module-selector" role="tablist" aria-label="Elegir módulo de quiz">
+      <span class="module-selector-label">Módulo:</span>
+      <div class="module-pills">
+        @for (mod of modules; track mod.id) {
+          <button
+            type="button"
+            role="tab"
+            class="module-pill glass-card"
+            [class.active]="selectedModule().id === mod.id"
+            [attr.aria-selected]="selectedModule().id === mod.id"
+            (click)="selectModule(mod.id)"
+          >
+            <span class="module-pill-name">{{ mod.name }}</span>
+            <span class="module-pill-count">{{ mod.questions.length }} preguntas</span>
+          </button>
+        }
+      </div>
+    </div>
+    <div class="quiz-header">
+      <div class="quiz-progress-wrap">
+        <span>Pregunta {{ currentIndex() + 1 }} de {{ totalQuestions() }}</span>
+        <div class="progress-bar" style="width: 8rem;">
+          <div class="progress-bar-fill" [style.width.%]="(currentIndex() / totalQuestions()) * 100"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-card glass-card">
+      <div class="question-meta">
+        <span class="badge badge-outline">Pregunta {{ currentIndex() + 1 }}</span>
+      </div>
+      <h2 class="question-text">{{ q.question }}</h2>
+
+      <div class="options-list">
+        @for (option of q.options; track $index) {
+          <button
+            type="button"
+            class="option-btn"
+            [class.option-correct]="showFeedback() && $index === q.correctAnswer"
+            [class.option-wrong]="showFeedback() && selectedAnswer() === $index && $index !== q.correctAnswer"
+            [class.option-selected]="!showFeedback() && selectedAnswer() === $index"
+            (click)="selectAnswer($index)"
+            [disabled]="showFeedback()"
+          >
+            <span class="option-letter">{{ getOptionLetter($index) }}</span>
+            <span class="option-text">{{ option }}</span>
+            @if (showFeedback() && $index === q.correctAnswer) {
+              <span class="option-check">✓</span>
+            }
+            @if (showFeedback() && selectedAnswer() === $index && $index !== q.correctAnswer) {
+              <span class="option-x">✗</span>
+            }
+          </button>
+        }
+      </div>
+
+      @if (showFeedback()) {
+        <div class="feedback" [class.correct]="isCorrect()" [class.incorrect]="!isCorrect()">
+          <p class="feedback-title">{{ isCorrect() ? '¡Correcto!' : 'Incorrecto' }}</p>
+          <p class="feedback-explanation">{{ q.explanation }}</p>
+          @if (q.tip) {
+            <p class="feedback-tip">💡 {{ q.tip }}</p>
+          }
+          @if (!isCorrect()) {
+            <p class="feedback-lesson">Repasa: {{ q.relatedLesson }}</p>
+          }
+        </div>
+      }
+
+      <div class="question-actions">
+        <button type="button" class="btn btn-outline" (click)="retry()">↩ Reiniciar</button>
+        @if (!showFeedback()) {
+          <button
+            type="button"
+            class="btn btn-primary glow-primary"
+            (click)="submitAnswer()"
+            [disabled]="selectedAnswer() === null"
+          >
+            Comprobar ✓
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primary glow-primary" (click)="nextQuestion()">
+            {{ currentIndex() < totalQuestions() - 1 ? 'Siguiente' : 'Ver resultados' }} →
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="quiz-summary glass-subtle">
+      <span>Respondidas: <strong>{{ answeredCount() }}/{{ totalQuestions() }}</strong></span>
+      <span>Correctas: <strong class="text-accent">{{ correctCount() }}</strong></span>
+      <span>Puntuación actual: <strong>{{ scorePercentage() }}%</strong></span>
+    </div>
+  </div>
+}

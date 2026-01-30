@@ -1,0 +1,45 @@
+@if (!focusMode()) {
+  <aside class="sidebar glass" [class.collapsed]="collapsed()">
+    <div class="sidebar-header">
+      @if (!collapsed()) {
+        <span class="sidebar-title">Secciones</span>
+      }
+      <button
+        type="button"
+        class="btn btn-ghost btn-icon"
+        (click)="toggleCollapse()"
+        [attr.aria-label]="collapsed() ? 'Expandir sidebar' : 'Colapsar sidebar'"
+      >
+        @if (collapsed()) {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        }
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        @for (item of sections; track item.id) {
+          <li>
+            <button
+              type="button"
+              class="nav-item"
+              [class.active]="activeSection() === item.id"
+              (click)="selectItem(item)"
+            >
+              <div class="nav-icon" [class.active]="activeSection() === item.id">
+                <app-icon [name]="item.icon"></app-icon>
+              </div>
+              @if (!collapsed()) {
+                <div class="nav-content">
+                  <span class="label-text">{{ item.label }}</span>
+                </div>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+}
