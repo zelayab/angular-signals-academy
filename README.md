@@ -1,71 +1,81 @@
-# Signals Academy – Angular
+# Signals Academy
 
-Página interactiva educativa para aprender **Angular Signals** con ejemplos reales. Usa **Signals** para todo el estado de la UI (tabs, sección, búsqueda, modo enfoque, tema).
+Página interactiva educativa para aprender **Angular Signals** con lecciones, labs y quizzes. Desarrollada con **Angular 21**, componentes **standalone**, **SCSS** y estado 100% con **Signals** (sin NgRx).
 
-## ¿Qué es la app?
+## ¿Qué incluye?
 
-- **Lecciones**: Más de **130 lecciones** en 12 secciones (Inicio, Introducción, Fundamentos, Computed, Effects, Input/Output, RxJS, Patrones, Anti-patrones, Labs, Quiz, Recursos). Cada lección tiene definición, Cómo/Por qué/Cuándo/Con qué/Para qué, código, errores comunes, checklist, “Explícamelo como si tuviera 5” y mini desafío. **Filtro por tags** y **búsqueda** por texto. Muchas lecciones incluyen **“Probar en Lab”** para ir directo al Lab correspondiente.
-- **Labs**: **7 laboratorios** interactivos (Contador, Lista filtrada, localStorage, Carrito, Formulario con validación, Theme switcher, Búsqueda y orden) con editor Monaco, preview embebido (StackBlitz) y “Abrir en StackBlitz”.
-- **Quiz**: Módulos de preguntas (Fundamentos, Effects, Avanzado) con opciones, feedback y resultados.
-- **Recursos**: Enlaces externos funcionales (documentación, blog, YouTube, RFC, Discord, GitHub, newsletter, X).
+| Sección | Contenido |
+|--------|------------|
+| **Lecciones** | ~130 lecciones en 12 secciones: Inicio, Introducción, Fundamentos, Computed, Effects, Input/Output, RxJS, Patrones, Anti-patrones, Labs, Quiz, Recursos. Cada una con definición, Cómo/Por qué/Cuándo/Con qué/Para qué, código, errores comunes, checklist, “Explícamelo más simple” y mini desafío. Filtro por tags y búsqueda. Muchas incluyen **“Probar en Lab”**. |
+| **Labs** | 7 laboratorios interactivos con editor Monaco y preview (StackBlitz): Contador, Lista filtrada, localStorage, Carrito, Formulario con validación, Theme switcher, Búsqueda y orden. |
+| **Quiz** | 6 módulos de preguntas: Fundamentos, Effects, Computed, Input/Output + Signals, Anti-patrones, Patrones Avanzados. Selector por pills, feedback por pregunta y resultados al finalizar. |
+| **Recursos** | Enlaces externos (documentación, blog, YouTube, RFC, Discord, GitHub, newsletter, X). |
 
-Todo el estado (tab activo, sección, búsqueda, modo enfoque, tema claro/oscuro, sidebar colapsado) está manejado con **Signals** en `AppStateService`.
+El estado de la app (tab, sección, búsqueda, modo enfoque, tema claro/oscuro, sidebar) se gestiona con **Signals** en `AppStateService`.
 
 ## Cómo correrla
 
 ```bash
 cd angular-signals-academy
-npm install   # si no lo has hecho
-npm start     # ng serve
+npm install
+npm start
 ```
 
-Abre `http://localhost:4200`.
+Abre **http://localhost:4200**.
 
-Build de producción:
+### Build de producción
 
 ```bash
 npm run build
 ```
 
-Los artefactos estarán en `dist/angular-signals-academy/browser/`.
+Salida en `dist/angular-signals-academy/browser/`.
 
 ## Deep-linking (URLs)
 
-La app sincroniza el estado con la URL mediante **query params**:
+La app sincroniza estado con la URL mediante **query params**:
 
-- **`/?leccion=intro-1`** – Abre la pestaña Lecciones, la sección correspondiente y esa lección.
-- **`/?lab=lab-1`** – Abre la pestaña Labs y el lab indicado.
-- **`/?quiz=fundamentos`** – Abre la pestaña Quiz y ese módulo.
+| URL | Acción |
+|-----|--------|
+| `/?leccion=intro-1` | Abre Lecciones, sección correspondiente y esa lección. |
+| `/?lab=lab-1` | Abre Labs y el lab indicado (`lab-1` … `lab-7`). |
+| `/?quiz=fundamentos` | Abre Quiz y ese módulo (`fundamentos`, `effects`, `computed`, `input-output`, `anti-patrones`, `avanzado`). |
 
-Al seleccionar una lección, ir a un lab o abrir un quiz desde una lección de tipo lab/quiz, la URL se actualiza para poder compartir el enlace.
+Al elegir lección, lab o quiz, la URL se actualiza para poder compartir el enlace.
 
 ## Angular Signals (resumen)
 
-- **`signal(initialValue)`**: valor reactivo que se lee con `signal()` y se actualiza con `.set()` o `.update(fn)`.
-- **`computed(() => ...)`**: valor derivado que se recalcula cuando cambian los signals que lee (lazy, solo cuando alguien lee el computed).
-- **`effect(() => ...)`**: efecto secundario (logging, localStorage, DOM) que se ejecuta cuando cambian los signals que lee dentro del effect.
+- **`signal(valor)`**: valor reactivo; se lee con `signal()` y se actualiza con `.set()` o `.update(fn)`.
+- **`computed(() => ...)`**: valor derivado que se recalcula cuando cambian los signals que lee (lazy).
+- **`effect(() => ...)`**: efecto secundario (logging, localStorage, DOM) que se ejecuta cuando cambian los signals que lee.
 
-En esta app se usan signals para: tab/sección activa, búsqueda, modo enfoque, tema oscuro/claro, sidebar colapsado; y en los tabs para lección seleccionada, lab seleccionado, código del lab, índice de pregunta del quiz, respuestas, etc.
+En esta app se usan signals para: tab/sección, búsqueda, modo enfoque, tema, sidebar, lección/lab/quiz seleccionados, respuestas del quiz, etc.
 
 ## Estructura del proyecto
 
-- **`src/app/core`**: modelos, datos (`lessons.data`, `labs.data`, `resources.data`, `quiz.data`, `sidebar.data`) y servicios (`AppStateService`, `StackBlitzService`).
-- **`src/app/core/data/lessons/`**: lecciones por sección. Cada sección tiene `sections/<seccion>.lessons.ts` (lista) y `sections/<seccion>.content.ts` (contenido detallado).
-- **`src/app/components`**: `app-header`, `app-sidebar`, `mobile-nav`, `lesson-detail` y tabs `lessons-tab`, `labs-tab`, `quiz-tab`.
-- **`src/app/shared`**: `icon`, `highlight-code.pipe`, `monaco-editor`.
-- **`src/styles.scss`**: tema “Liquid Glass”, tags, skip link, focus visible, `prefers-reduced-motion`.
+```
+src/app/
+├── core/           # Modelos, datos (lessons, labs, quiz, resources, sidebar), servicios (AppStateService, StackBlitzService)
+├── components/     # app-header, app-sidebar, mobile-nav, lesson-detail, tabs (lessons-tab, labs-tab, quiz-tab)
+├── shared/         # icon, highlight-code.pipe, monaco-editor
+├── app.ts, app.html, app.routes.ts, app.config.ts
+└── root.component.ts
+```
+
+- **Lecciones**: `core/data/lessons/sections/<seccion>.lessons.ts` (lista) y `<seccion>.content.ts` (contenido).
+- **Estilos**: `src/styles.scss` — tema “Liquid Glass”, variables light/dark, skip link, focus visible, `prefers-reduced-motion`.
 
 ## Guía rápida de Labs
 
-1. **Contador reactivo**: `signal(0)`, botones +/- y reset con `.update()` y `.set(0)`.
-2. **Lista filtrada**: `signal` de items y `signal` de filtro; `computed` que filtra por el texto.
-3. **localStorage**: `effect` que lee el signal de notas y hace `localStorage.setItem`.
-4. **Carrito**: signals de ítems; `computed` para subtotal, IVA, total y cantidad.
-5. **Formulario con validación**: signals para email/password; `computed` para isEmailValid, strength, canSubmit.
-6. **Theme switcher**: `effect` que aplica clase al `document` según un signal `dark`.
-7. **Búsqueda y orden**: `computed` que filtra y ordena una lista según query y sort.
+1. **Contador** — `signal(0)`, `.update()` y `.set(0)`.
+2. **Lista filtrada** — `signal` de items + `signal` de filtro; `computed` que filtra.
+3. **localStorage** — `effect` que hace `localStorage.setItem` al cambiar el signal.
+4. **Carrito** — signals de ítems; `computed` para subtotal, IVA, total.
+5. **Formulario con validación** — signals email/password; `computed` isEmailValid, canSubmit.
+6. **Theme switcher** — `effect` que aplica clase al `document` según signal `dark`.
+7. **Búsqueda y orden** — `computed` que filtra y ordena la lista.
 
-En cada lab puedes editar el código en el editor, ejecutar “Aquí” para ver el preview embebido o “Abrir en StackBlitz” para trabajar en una pestaña externa.
+En cada lab: editar código en el editor, “Ejecutar aquí” para preview embebido o “Abrir en StackBlitz” para abrirlo en una pestaña.
 
 ## Tests
 
@@ -73,17 +83,11 @@ En cada lab puedes editar el código en el editor, ejecutar “Aquí” para ver
 npm test
 ```
 
-Tests unitarios (Karma + Jasmine) para `AppStateService`, `getTagColorClass` y utilidades de lecciones (`getSectionForLessonId`, `getLessonContent`, `LESSONS_BY_SECTION`). Para ejecutar una sola vez: `ng test --no-watch --browsers=ChromeHeadless`.
+Tests (Karma + Jasmine): `AppStateService`, `getTagColorClass`, lecciones (`getSectionForLessonId`, `getLessonContent`, `LESSONS_BY_SECTION`, contenido de lecciones nuevas). Una sola ejecución: `ng test --no-watch --browsers=ChromeHeadless`.
 
 ## Despliegue
 
-Build de producción:
-
-```bash
-npm run build
-```
-
-La salida está en `dist/angular-signals-academy/browser/`. Puedes desplegarla en cualquier hosting estático (Vercel, Netlify, Firebase Hosting, GitHub Pages, etc.).
+Tras `npm run build`, la carpeta `dist/angular-signals-academy/browser/` se puede desplegar en cualquier hosting estático: **Vercel**, **Netlify**, **Firebase Hosting**, **GitHub Pages**, etc.
 
 ### PWA (opcional)
 
@@ -91,6 +95,10 @@ La salida está en `dist/angular-signals-academy/browser/`. Puedes desplegarla e
 ng add @angular/pwa
 ```
 
+## Publicar en GitHub
+
+Si el repo aún no está en GitHub, en la raíz del proyecto está **`PUBLICAR_GITHUB.md`** con los pasos para crear el repositorio y hacer el primer `git push`.
+
 ---
 
-Desarrollado con **Angular 21**, componentes **standalone** y **SCSS** (sin Tailwind). Sin NgRx; estado 100% con Signals. Accesibilidad: skip link, focus visible, `prefers-reduced-motion`.
+**Stack:** Angular 21 · Standalone · SCSS (sin Tailwind) · Signals (sin NgRx) · Accesibilidad: skip link, focus visible, `prefers-reduced-motion`.
