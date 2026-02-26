@@ -1,4 +1,5 @@
 import type { QuizModule } from '../models/quiz.model';
+import { SOURCES } from './sources.data';
 
 export const QUIZ_MODULES: QuizModule[] = [
   {
@@ -13,6 +14,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Los Signals en Angular se leen llamándolos como funciones. La sintaxis contador() invoca el getter del signal y retorna su valor actual.',
         relatedLesson: 'Fundamentos > Crear tu primer Signal',
         tip: 'Recuerda: los paréntesis son esenciales para leer un signal',
+        sources: [SOURCES.apiSignal, SOURCES.guideSignals],
       },
       {
         id: 'q2',
@@ -22,6 +24,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'update() es el método preferido cuando necesitas el valor anterior para calcular el nuevo. Recibe una función que transforma el valor actual.',
         relatedLesson: 'Fundamentos > Crear tu primer Signal',
         tip: 'update() es más limpio que set() cuando dependes del valor actual',
+        sources: [SOURCES.apiSignal],
       },
       {
         id: 'q3',
@@ -36,6 +39,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Mutar directamente (ej: miArray().push(item)) cambia la referencia interna pero Angular no detecta el cambio porque la referencia del array sigue siendo la misma.',
         relatedLesson: 'Fundamentos > Signals en servicios',
         tip: 'Siempre crea un nuevo array: items.update(arr => [...arr, newItem])',
+        sources: [SOURCES.apiSignal],
       },
       {
         id: 'q4',
@@ -50,6 +54,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Un signal() es un valor base que puedes modificar con set()/update(). Un computed() es un valor derivado que se calcula automáticamente basándose en otros signals y es de solo lectura.',
         relatedLesson: 'Computed > Introducción a computed()',
         tip: 'Piensa en computed como una fórmula de Excel que se actualiza sola',
+        sources: [SOURCES.apiSignal, SOURCES.apiComputed],
       },
       {
         id: 'q5',
@@ -64,6 +69,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Los computed signals son lazy: solo se recalculan cuando sus dependencias cambian Y alguien lee su valor.',
         relatedLesson: 'Computed > Optimización de computed',
         tip: 'Los computed son pull-based: se calculan bajo demanda',
+        sources: [SOURCES.apiComputed],
       },
     ],
   },
@@ -84,6 +90,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'effect() se usa para ejecutar código con efectos secundarios (logging, localStorage, peticiones API) cuando uno o más signals cambian.',
         relatedLesson: 'Effects > Introducción a effect()',
         tip: 'Effects son para side effects, computed para valores derivados',
+        sources: [SOURCES.apiEffect],
       },
       {
         id: 'e2',
@@ -98,6 +105,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Si modificas un signal que el effect está observando, se crea un ciclo: el effect se ejecuta → modifica el signal → el effect se ejecuta de nuevo.',
         relatedLesson: 'Effects > Cleanup y ciclo de vida',
         tip: 'Usa allowSignalWrites: true solo cuando sea necesario y con cuidado',
+        sources: [SOURCES.apiEffect],
       },
     ],
   },
@@ -118,6 +126,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'computed() debe ser puro: sin side effects. No hagas I/O, ni DOM, ni llamadas async dentro.',
         relatedLesson: 'Computed > Cuándo NO usar computed',
         tip: 'computed = calcular valor; effect = hacer algo (guardar, enviar)',
+        sources: [SOURCES.apiComputed, SOURCES.apiEffect],
       },
       {
         id: 'c2',
@@ -132,6 +141,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Los computed son lazy: se recalculan solo cuando sus dependencias cambian Y alguien lee el valor del computed.',
         relatedLesson: 'Computed > Lazy evaluation',
         tip: 'Pull-based: se calcula bajo demanda',
+        sources: [SOURCES.apiComputed],
       },
       {
         id: 'c3',
@@ -141,6 +151,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Un computed debe ser una función pura que solo lee signals y devuelve un valor. No debe tener side effects ni escribir en signals.',
         relatedLesson: 'Computed > Introducción a computed()',
         tip: 'computed = derivar; effect = reaccionar y hacer algo',
+        sources: [SOURCES.apiComputed],
       },
       {
         id: 'c4',
@@ -155,6 +166,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Un computed que lee items() y filtro() y devuelve la lista filtrada es el patrón correcto: valor derivado, sin side effects.',
         relatedLesson: 'Computed > Computed para listas filtradas',
         tip: 'Lista derivada = computed',
+        sources: [SOURCES.apiComputed],
       },
     ],
   },
@@ -170,6 +182,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'input() e input.required() son la nueva API de inputs que devuelve un Signal. Ambas son válidas.',
         relatedLesson: 'Input/Output > input() como Signal',
         tip: 'input() devuelve Signal; en template se lee con title()',
+        sources: [SOURCES.apiInput],
       },
       {
         id: 'io2',
@@ -179,6 +192,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Los inputs declarados con input() son Signals; se leen con los paréntesis: count().',
         relatedLesson: 'Input/Output > input() como Signal',
         tip: 'Siempre () para leer un signal',
+        sources: [SOURCES.apiInput],
       },
       {
         id: 'io3',
@@ -193,6 +207,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'model() crea un signal que se puede usar con [(ngModel)] o binding bidireccional: el padre y el hijo pueden leer y escribir.',
         relatedLesson: 'Input/Output > Model inputs (two-way binding)',
         tip: 'model() = input + output en uno',
+        sources: [SOURCES.apiModel],
       },
       {
         id: 'io4',
@@ -202,6 +217,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Técnicamente puedes mezclar, pero se recomienda migrar a input()/output() para tener consistencia y Signals en toda la API del componente.',
         relatedLesson: 'Input/Output > Resumen Input/Output + Signals',
         tip: 'Preferir input() y output() en componentes nuevos',
+        sources: [SOURCES.apiInput, SOURCES.apiOutput],
       },
     ],
   },
@@ -222,6 +238,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Escribir en un signal que el effect lee hace que el effect se vuelva a ejecutar, creando un ciclo infinito si no se evita.',
         relatedLesson: 'Anti-patrones > Loops infinitos en effect()',
         tip: 'No escribas lo que lees en un effect',
+        sources: [SOURCES.apiEffect],
       },
       {
         id: 'ap2',
@@ -236,6 +253,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Mutación directa no cambia la referencia; Angular solo detecta cuando la referencia del valor del signal cambia. Usa items.update(arr => [...arr, newItem]).',
         relatedLesson: 'Anti-patrones > Mutación directa',
         tip: 'Inmutabilidad: crea un nuevo array/objeto',
+        sources: [SOURCES.apiSignal],
       },
       {
         id: 'ap3',
@@ -250,6 +268,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Si el servicio tiene un WritableSignal internamente, expón solo la versión de solo lectura con asReadonly() para que los consumidores no puedan hacer set/update.',
         relatedLesson: 'Anti-patrones > Exponer WritableSignal por error',
         tip: 'Exponer solo lectura evita modificaciones desde fuera',
+        sources: [SOURCES.apiSignal],
       },
       {
         id: 'ap4',
@@ -264,6 +283,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Los signals deben crearse de forma estable: mismo orden y cantidad en cada ejecución. Crearlos en bucles o condicionales puede dar comportamientos erráticos.',
         relatedLesson: 'Anti-patrones > Crear signals en bucles o condicionales',
         tip: 'Signals en nivel de clase o en constructor de forma estable',
+        sources: [SOURCES.apiSignal],
       },
     ],
   },
@@ -279,6 +299,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'toSignal() es una función de Angular que suscribe al Observable y crea un Signal que se actualiza con cada emisión.',
         relatedLesson: 'Integración con RxJS > toSignal() y toObservable()',
         tip: 'Recuerda manejar el valor inicial cuando el Observable no ha emitido aún',
+        sources: [SOURCES.rxjsInterop],
       },
       {
         id: 'a2',
@@ -293,6 +314,7 @@ export const QUIZ_MODULES: QuizModule[] = [
         explanation: 'Mutar objetos/arrays directamente sin crear nuevas referencias rompe la reactividad. Angular no detecta cambios internos, solo cambios de referencia.',
         relatedLesson: 'Anti-patrones > Errores comunes con Signals',
         tip: 'Siempre usa inmutabilidad: spread operators, map(), filter(), etc.',
+        sources: [SOURCES.apiSignal],
       },
     ],
   },

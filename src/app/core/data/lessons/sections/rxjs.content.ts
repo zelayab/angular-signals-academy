@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const RXJS_CONTENT: Record<string, LessonContent> = {
   'rx-1': {
@@ -16,6 +17,7 @@ const count$ = toObservable(count);`,
     checklist: ['toSignal para usar Observable en template', 'toObservable para usar operadores con un signal'],
     explainLikeIm5: `toSignal es el traductor de "idioma Observable" a "idioma signal". toObservable es al revés. Así los dos mundos se entienden.`,
     challenge: { description: 'Convierte un Observable de timer(0, 1000) en un signal y muéstralo en el template.', hint: 'toSignal(timer(0, 1000), { initialValue: 0 })' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-2': {
     definition: `toSignal(observable$, { initialValue: valor }) es necesario cuando el Observable no emite de inmediato (p. ej. HTTP). Sin initialValue, el signal sería undefined hasta la primera emisión y podría romper el template. Con initialValue, el signal tiene ese valor hasta que el Observable emita.`,
@@ -31,6 +33,7 @@ const count$ = toObservable(count);`,
     checklist: ['¿El Observable emite de inmediato? Si no, initialValue', 'Tipar correctamente (User | null)'],
     explainLikeIm5: `initialValue es como poner un "pronto llega" en la caja mientras el cartero trae el paquete. Así la caja no está vacía al principio.`,
     challenge: { description: 'Usa toSignal con un HttpClient.get y initialValue null; muestra user()?.name en el template.', hint: 'toSignal(this.http.get(...), { initialValue: null })' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-3': {
     definition: `toObservable(signal) convierte un signal en un Observable. Cada vez que el signal cambia, el Observable emite. Útil cuando necesitas operadores RxJS (debounceTime, switchMap, combineLatest). Ejemplo: toObservable(searchQuery).pipe(debounceTime(300), distinctUntilChanged()).subscribe(...).`,
@@ -49,6 +52,7 @@ query$.pipe(
     checklist: ['toObservable(signal) para operadores', 'Gestionar suscripción (takeUntilDestroyed o DestroyRef)'],
     explainLikeIm5: `toObservable es el traductor de "caja mágica" a "tubo que suelta bolitas". Así puedes usar filtros y retrasos (debounce) en el tubo.`,
     challenge: { description: 'Convierte un signal de búsqueda en Observable, aplica debounceTime(400) y actualiza un signal results.', hint: 'toObservable(search).pipe(debounceTime(400), ...).subscribe(r => results.set(r))' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-4': {
     definition: `Puedes combinar Observables y signals en el mismo componente: estado "vivo" en signals (filtros, tema); flujos de eventos en Observables (WebSocket, teclado). Usa toSignal(observable$) para exponer el Observable en el template como signal. Usa toObservable(signal) cuando necesites operadores. Mantén una sola fuente de verdad por concepto.`,
@@ -72,6 +76,7 @@ results = toSignal(
     checklist: ['Una fuente de verdad por dato', 'toSignal para llevar Observable al template'],
     explainLikeIm5: `En la misma habitación puedes tener cajas mágicas (signals) y tubos (Observables). Los traductores (toSignal, toObservable) hacen que se entiendan.`,
     challenge: { description: 'Combina un signal de "userId" con un Observable de getUser(userId) y expón el usuario como signal.', hint: 'toSignal(toObservable(userId).pipe(switchMap(id => getUser(id))), { initialValue: null })' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-5': {
     definition: `Para migrar de Observable a Signal: (1) Identifica dónde usas async pipe con un Observable. (2) Convierte a signal con toSignal(observable$, { initialValue: ... }) en el componente. (3) En el template reemplaza observable$ | async por signal(). (4) Si el Observable se crea en el componente, puede seguir siendo la fuente; el signal es la "vista" para el template.`,
@@ -91,6 +96,7 @@ user = toSignal(this.userService.getUser$(), { initialValue: null });
     checklist: ['toSignal con initialValue adecuado', 'Template usa signal()'],
     explainLikeIm5: `Antes mirabas el tubo con async; ahora guardas lo que sale del tubo en una caja (toSignal) y miras la caja con ().`,
     challenge: { description: 'Migra un componente que use async pipe a toSignal y actualiza el template.', hint: 'toSignal(obs, { initialValue: null }) y user()?.prop' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-6': {
     definition: `toSignal(observable$, { requireSync: true }) exige que el Observable emita de inmediato (síncrono); si no, lanza. Útil cuando sabes que la fuente siempre tiene valor (ej. BehaviorSubject). Para manejo de errores: el Observable puede usar catchError; el signal reflejará el valor o el estado de error según cómo lo manejes (algunos patrones exponen result: { data, error }).`,
@@ -110,6 +116,7 @@ const withError = toSignal(
     checklist: ['requireSync solo si la fuente emite ya', 'Errores: catchError en pipe o exponer { data, error }'],
     explainLikeIm5: `requireSync es "el tubo tiene que soltar una bolita ya". Si no, Angular se queja. Para los errores, el tubo puede soltar una bolita que diga "error" y la caja la guarda.`,
     challenge: { description: 'Usa toSignal con un Observable que puede fallar y expon un signal con { data, error }.', hint: 'pipe(catchError(e => of({ error: e }))), initialValue: { data: null, error: null }' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-7': {
     definition: `DestroyRef permite registrar callbacks cuando el componente o servicio se destruye. Útil para takeUntilDestroyed() o para limpiar suscripciones manuales. Si usas subscribe() en un componente, usa takeUntilDestroyed() (necesita DestroyRef o injection context) para que la suscripción se cancele al destruir el componente. No mezcles subscribe() sin cancelar con signals; puede haber memory leaks.`,
@@ -129,6 +136,7 @@ query$ = toObservable(this.query).pipe(
     checklist: ['Si usas subscribe(), cancelar con takeUntilDestroyed', 'Preferir toSignal cuando solo necesitas el valor en template'],
     explainLikeIm5: `Cuando te vas de la habitación (destruir componente), tienes que colgar el teléfono (cancelar suscripción). DestroyRef es el que avisa de que te vas.`,
     challenge: { description: 'Reemplaza un subscribe() por toSignal o añade takeUntilDestroyed(destroyRef) al pipe.', hint: 'inject(DestroyRef) y takeUntilDestroyed(this.destroyRef)' },
+    sources: [SOURCES.rxjsInterop],
   },
   'rx-8': {
     definition: `Resumen RxJS + Signals: (1) Estado "vivo" y valor actual en UI → signals. (2) Flujos de eventos (teclado, WebSocket, HTTP que se cancela) → Observables. (3) Puente: toSignal(observable$) para usar en template; toObservable(signal) para operadores. (4) Migración: async pipe → toSignal. (5) Siempre initialValue cuando el Observable no emite de inmediato; gestionar errores en el pipe.`,
@@ -148,6 +156,7 @@ results = toSignal(
     checklist: ['Signals para estado y vista', 'toSignal/toObservable como puente', 'Cancelar suscripciones'],
     explainLikeIm5: `Cajas mágicas para lo que tienes en la mano; tubos para lo que viene de fuera. Los traductores (toSignal, toObservable) hacen que trabajen juntos.`,
     challenge: { description: 'Escribe en una frase cuándo usar signal y cuándo Observable en tu app.', hint: 'signal = valor actual; Observable = flujo de eventos.' },
+    sources: [SOURCES.rxjsInterop, SOURCES.guideSignals],
   },
   'rx-9': {
     definition: `Decisión rápida: ¿Signal u Observable? (1) ¿Necesitas un valor actual que la UI lee? → signal (o toSignal si viene de Observable). (2) ¿Es un flujo de eventos (HTTP, teclado, WebSocket)? → Observable. (3) ¿Quieres usar operadores (debounce, switchMap)? → toObservable(signal) o mantener Observable. (4) ¿Solo mostrar en template? → toSignal(observable$).`,
@@ -165,5 +174,6 @@ results = toSignal(this.search$.pipe(switchMap(q => this.api.search(q))), { init
     checklist: ['Valor actual → signal o toSignal', 'Flujo → Observable', 'Puente según necesidad'],
     explainLikeIm5: '¿Tienes una caja con un número? Usa signal. ¿Llegan mensajes por el tubo? Usa Observable. ¿Quieres poner el tubo en una caja? Usa toSignal.',
     challenge: { description: 'En tu app, identifica un Observable que podría ser toSignal() en el template.', hint: 'Cualquier async pipe puede ser toSignal con initialValue.' },
+    sources: [SOURCES.rxjsInterop],
   },
 };

@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const LABS_CONTENT: Record<string, LessonContent> = {
   'lab-1': {
@@ -14,6 +15,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Abrir la pestaña Labs', 'Seleccionar el lab Contador reactivo', 'Completar los TODOs con set() y update()'],
     explainLikeIm5: 'Un lab es como un juego donde tú escribes el código y ves el resultado al instante.',
     challenge: { description: 'Ir a Labs y completar el lab del contador.', hint: 'Usa la pestaña "Labs (Interactivo)" en la barra superior.' },
+    sources: [SOURCES.apiSignal],
   },
   'lab-2': {
     definition: 'Lab interactivo: lista filtrada con computed().',
@@ -28,6 +30,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir el lab Lista filtrada', 'Ver cómo computed() filtra en tiempo real'],
     explainLikeIm5: 'En el lab verás cómo la lista se filtra sola cuando escribes.',
     challenge: { description: 'Completar el lab de lista filtrada en la pestaña Labs.', hint: 'Labs (Interactivo) en el menú superior.' },
+    sources: [SOURCES.apiComputed],
   },
   'lab-3': {
     definition: 'Lab: sincronización con localStorage usando effect().',
@@ -42,6 +45,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir el lab de localStorage', 'Entender cómo effect() persiste el estado'],
     explainLikeIm5: 'Este lab enseña a guardar lo que escribes automáticamente.',
     challenge: { description: 'Completar el lab de persistencia en Labs.', hint: 'Pestaña Labs (Interactivo).' },
+    sources: [SOURCES.apiEffect],
   },
   'lab-4': {
     definition: 'Lab: estado derivado complejo (carrito con totales).',
@@ -56,6 +60,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir el lab del carrito', 'Ver subtotal, IVA y total como computed'],
     explainLikeIm5: 'En este lab el total del carrito se calcula solo cuando cambian los items.',
     challenge: { description: 'Completar el lab del carrito en Labs.', hint: 'Labs (Interactivo).' },
+    sources: [SOURCES.apiComputed],
   },
   'lab-5': {
     definition: 'Lab: formulario con validación usando signals y computed.',
@@ -70,6 +75,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir lab Formulario con validación', 'Completar isEmailValid, strength y canSubmit'],
     explainLikeIm5: 'En este lab el formulario te dice si el email está bien y si la contraseña es fuerte.',
     challenge: { description: 'Completar el lab de validación en Labs.', hint: 'Labs (Interactivo).' },
+    sources: [SOURCES.apiComputed],
   },
   'lab-6': {
     definition: 'Lab: theme switcher con effect().',
@@ -84,6 +90,7 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir lab Theme switcher', 'Ver cómo effect() aplica la clase al documento'],
     explainLikeIm5: 'Este lab cambia la luz de la página cuando tocas el botón.',
     challenge: { description: 'Completar el lab del theme en Labs.', hint: 'Labs (Interactivo).' },
+    sources: [SOURCES.apiEffect],
   },
   'lab-7': {
     definition: 'Lab: búsqueda y orden con computed().',
@@ -98,5 +105,6 @@ export const LABS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Labs', 'Abrir lab Búsqueda y orden', 'Probar filtro y cambio asc/desc'],
     explainLikeIm5: 'En este lab escribes y la lista se filtra y se ordena sola.',
     challenge: { description: 'Completar el lab de búsqueda en Labs.', hint: 'Labs (Interactivo).' },
+    sources: [SOURCES.apiComputed],
   },
 };

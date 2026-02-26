@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const COMPUTED_CONTENT: Record<string, LessonContent> = {
   'comp-1': {
@@ -17,6 +18,7 @@ const total = computed(() => quantity() * unitPrice());
     checklist: ['El computed solo deriva valores', 'No modificar estado ni llamar APIs dentro del computed'],
     explainLikeIm5: `Computed es como un amigo que siempre te dice el total de la compra cuando tú le preguntas. Él solo mira la cantidad y el precio y te responde. No va a la tienda ni escribe en la pizarra.`,
     challenge: { description: 'Crea un computed que devuelva el doble de un signal numérico.', hint: 'computed(() => valor() * 2)' },
+    sources: [SOURCES.apiComputed, SOURCES.guideSignals],
   },
   'comp-2': {
     definition: `Angular rastrea automáticamente qué signals lees dentro de la función pasada a computed(). Esas lecturas (las llamadas signal()) registran dependencias. Cuando alguna dependencia cambia, el computed se marca como "sucio" y se recalcula en la siguiente lectura.`,
@@ -36,6 +38,7 @@ const sum = computed(() => {
     checklist: ['Todas las lecturas de signals deben ser estables (mismas en cada ejecución)', 'No leer signals condicionalmente de forma que cambie el set de dependencias'],
     explainLikeIm5: `El computed tiene una libreta donde apunta de quién se entera. Cada vez que mira un signal, lo apunta. Cuando uno de esos cambia, borra el resultado y la próxima vez que le pregunten vuelve a calcular.`,
     challenge: { description: 'Escribe un computed que dependa de dos signals y verifica que al cambiar solo uno se recalcula.', hint: 'Pon un console.log dentro del computed y cambia cada signal por separado.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-3': {
     definition: `Para evitar recálculos innecesarios: (1) no leas más signals de los necesarios; (2) evita lógica pesada dentro del computed; (3) si una rama lee signals distintos según condición, el tracking puede ser impredecible — mejor derivar en pasos con varios computed.`,
@@ -53,6 +56,7 @@ const value = computed(() => flag() ? a() : b()); // dependencias: flag, a, b`,
     checklist: ['El computed es puro (mismas entradas → mismo resultado)', 'No side effects; no I/O'],
     explainLikeIm5: `El computed tiene que ser un amigo que solo mira y calcula. No puede ir a la tienda (HTTP) ni tocar la pizarra (escribir signals). Si hace trampas, Angular se puede confundir.`,
     challenge: { description: 'Mueve una comparación costosa (p. ej. filtro sobre 1000 ítems) a un computed y mide que solo se ejecuta cuando cambian items o filtro.', hint: 'Usa console.time/timeEnd dentro del computed.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-4': {
     definition: `Un computed puede depender de otro computed. Angular rastrea la cadena: si cambia un signal base, se marcan como sucios los computed que lo leen y los que leen a esos. La evaluación sigue siendo perezosa: solo se recalcula cuando alguien lee el computed final.`,
@@ -69,6 +73,7 @@ const sorted = computed(() => [...filtered()].sort((a,b) => a.name.localeCompare
     checklist: ['Computed anidados están bien si la cadena es clara', 'No leer Observables ni I/O dentro del computed'],
     explainLikeIm5: `Un amigo (computed) puede preguntar a otro amigo (otro computed) que a su vez mira la pizarra. Cuando la pizarra cambia, ambos se actualizan cuando tú preguntas.`,
     challenge: { description: 'Crea filtered y sorted como dos computed; filtered filtra por texto y sorted ordena filtered().', hint: 'sorted = computed(() => [...filtered()].sort(...))' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-5': {
     definition: `Puedes leer varios signals dentro del mismo computed. Todas las lecturas se registran como dependencias. total = computed(() => quantity() * unitPrice() - discount()) depende de quantity, unitPrice y discount. Cuando cualquiera cambia, total se recalcula al leerse.`,
@@ -86,6 +91,7 @@ const sum = computed(() => a() + b() + c());`,
     checklist: ['Todas las lecturas de signals en cada ejecución son estables', 'El resultado es una función pura de las dependencias'],
     explainLikeIm5: `El amigo mira varias pizarras (varios signals) y te da un número que depende de todas. Si cualquiera cambia, la próxima vez que preguntes te recalcula.`,
     challenge: { description: 'Crea un computed que combine tres signals (nombre, apellido, título) en una cadena "título nombre apellido".', hint: 'computed(() => `${title()} ${name()} ${surname()}`)' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-6': {
     definition: `Lazy evaluation: un computed solo se recalcula cuando alguien lee su valor (o cuando un effect lo lee). Si nadie lee total(), aunque quantity() cambie, el computed no ejecuta la función hasta que llames total(). Así se evita trabajo innecesario.`,
@@ -102,6 +108,7 @@ const sum = computed(() => a() + b() + c());`,
     checklist: ['Computed = valor derivado; se evalúa cuando se lee', 'Si solo quieres reaccionar, usa effect'],
     explainLikeIm5: `El amigo no calcula hasta que tú le preguntas. Si no preguntas, no calcula. Así no se cansa por nada.`,
     challenge: { description: 'Comprueba con console.log dentro de un computed que no se ejecuta hasta que lo lees en el template.', hint: 'Pon el computed en un @if que a veces sea false.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-7': {
     definition: `Evita ramas que lean signals diferentes según condición. Ejemplo: computed(() => flag() ? a() : b()). Las dependencias son flag, a y b; está bien. Pero si haces computed(() => { if (flag()) return a(); return b(); }) y en una rama no lees b(), en la primera ejecución b no se registra y luego puede haber comportamientos raros. Lee siempre los mismos signals en cada "tipo" de ejecución.`,
@@ -119,6 +126,7 @@ const bad = computed(() => { if (flag()) return a(); return b(); }); // OK, pero
     checklist: ['En todas las ramas, las lecturas de signals deben ser predecibles', 'Si dudas, lee todos los signals que puedan influir al inicio'],
     explainLikeIm5: `El amigo tiene que mirar siempre las mismas pizarras cuando tú preguntas por el mismo tipo de cosa. Si a veces mira una y a veces otra sin avisar, se confunde.`,
     challenge: { description: 'Escribe un computed que devuelva a() o b() según flag() y verifica en DevTools que las dependencias son flag, a, b.', hint: 'Lee los tres en el computed de forma estable.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-8': {
     definition: `Patrón típico: list = signal([]), query = signal(''), sortBy = signal('name'). filtered = computed(() => list().filter(i => i.name.includes(query()))). sorted = computed(() => [...filtered()].sort((a,b) => ...)). En el template usas sorted() y la lista se filtra y ordena de forma reactiva.`,
@@ -138,6 +146,7 @@ const sorted = computed(() =>
     checklist: ['Filtrar devuelve nuevo array', 'Ordenar sobre una copia: [...filtered()].sort()'],
     explainLikeIm5: `Primero filtras los juguetes (computed filtered), luego los ordenas en una fila (computed sorted). Cada vez que cambia la caja de juguetes o la regla de filtro, se vuelve a filtrar y ordenar cuando miras.`,
     challenge: { description: 'Implementa filtered y sorted para una lista de ítems con query y sortBy como signals.', hint: 'filter + spread + sort en dos computed.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-9': {
     definition: `Un computed puede devolver una Promise; para datos async, Angular ofrece resource() (y antes resourceLoader) que trabaja con funciones que devuelven Promise. computed(() => fetch(...)) no es ideal porque fetch es side effect; mejor usar resource() que lee un signal (ej. id) y devuelve la promesa. Así el "recurso" se recalcula cuando id cambia.`,
@@ -156,6 +165,7 @@ const user = resource(userId, () =>
     checklist: ['Datos async: resource() o toSignal(observable$)', 'computed solo para valores síncronos derivados'],
     explainLikeIm5: `El amigo que calcula no puede ir a la tienda (HTTP). Para cosas que vienen de la tienda hay otro ayudante (resource o toSignal).`,
     challenge: { description: 'Busca en la documentación la API resource() y cómo se usa con un signal de id.', hint: 'angular.dev → resource' },
+    sources: [SOURCES.apiComputed, SOURCES.guideSignals],
   },
   'comp-10': {
     definition: `No uses computed para: (1) Side effects (HTTP, localStorage, DOM). (2) I/O o llamadas que no son puras. (3) Lógica que depende de estado externo no signal. (4) Cuando quieres "ejecutar algo cuando cambie" (eso es effect). El computed debe ser una función pura de los signals que lee.`,
@@ -173,6 +183,7 @@ effect(() => { localStorage.setItem('x', count()); });`,
     checklist: ['Computed = puro, sin side effects', 'Si hace I/O o escribe en algún lado → effect'],
     explainLikeIm5: `El amigo que calcula solo mira y responde. No puede guardar en el cajón ni llamar por teléfono. Para eso está el ayudante (effect).`,
     challenge: { description: 'Identifica en tu código si hay algún computed que haga side effect y muévelo a un effect.', hint: 'Cualquier cosa que no sea "leer signals y devolver un valor" es side effect.' },
+    sources: [SOURCES.apiComputed, SOURCES.apiEffect],
   },
   'comp-11': {
     definition: `Para testear un computed: (1) Crea el componente o servicio que tiene el computed; (2) Actualiza los signals de los que depende; (3) Lee el computed y verifica el valor. expect(component.total()).toBe(20). No necesitas fixture.detectChanges() solo para leer el computed; sí si quieres comprobar el template.`,
@@ -191,6 +202,7 @@ effect(() => { localStorage.setItem('x', count()); });`,
     checklist: ['Actualiza dependencias con set/update', 'Lee el computed y haz expect'],
     explainLikeIm5: `En el test cambias las pizarras (signals) y luego preguntas al amigo (computed); compruebas que te responde bien.`,
     challenge: { description: 'Escribe un test para un computed que combine firstName y lastName en fullName.', hint: 'set ambos signals y expect(comp.fullName()).toBe("Juan Pérez")' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-12': {
     definition: `Resumen computed: (1) computed() para valores derivados; (2) Dependencias automáticas al leer signals dentro; (3) Lazy: solo se recalcula cuando se lee; (4) Sin side effects; (5) Pueden anidarse; (6) Evitar ramas que cambien el set de dependencias. Siguiente: effect() para side effects.`,
@@ -207,6 +219,7 @@ effect(() => { save(total()); });`,
     checklist: ['Derivado = computed', 'Acción al cambiar = effect'],
     explainLikeIm5: `El amigo que calcula (computed) ya lo dominas. Ahora viene el ayudante que hace cosas cuando cambia la pizarra (effect).`,
     challenge: { description: 'Lista tres ejemplos en tu app: uno que debe ser computed y uno que debe ser effect.', hint: 'computed: total, filteredList. effect: guardar en localStorage, analytics.' },
+    sources: [SOURCES.apiComputed, SOURCES.apiEffect],
   },
   'comp-13': {
     definition: 'Practica en el Lab: lista filtrada con computed(). Un signal de items y un signal de búsqueda; un computed que filtra en tiempo real.',
@@ -221,6 +234,7 @@ effect(() => { save(total()); });`,
     checklist: ['Abrir el Lab Lista filtrada', 'Escribir en el input y ver el filtro en tiempo real', 'Entender las dependencias del computed'],
     explainLikeIm5: 'En el Lab escribes y la lista se filtra sola porque el computed mira lo que escribes.',
     challenge: { description: 'Completa el lab de lista filtrada en Labs.', hint: 'Probar en Lab o pestaña Labs.' },
+    sources: [SOURCES.apiComputed],
   },
   'comp-14': {
     definition: 'Practica en el Lab: formulario con validación usando computed(). signals para email y password; computed para isEmailValid, strength y canSubmit.',
@@ -235,5 +249,6 @@ effect(() => { save(total()); });`,
     checklist: ['Abrir el Lab Formulario con validación', 'Probar email válido/inválido y longitud de contraseña', 'Ver canSubmit habilitar/deshabilitar el botón'],
     explainLikeIm5: 'En el Lab el formulario te dice si el email está bien y si la contraseña es fuerte.',
     challenge: { description: 'Completar el lab de validación en Labs.', hint: 'Probar en Lab o pestaña Labs.' },
+    sources: [SOURCES.apiComputed],
   },
 };

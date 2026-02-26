@@ -1,0 +1,19 @@
+<nav class="section-navbar glass" aria-label="Navegación por secciones">
+  <div class="navbar-inner">
+    <ul class="navbar-list">
+      @for (item of sections; track item.id) {
+        <li>
+          <button
+            type="button"
+            class="navbar-item"
+            [class.active]="activeSection() === item.id"
+            (click)="selectItem(item)"
+          >
+            <app-icon [name]="item.icon"></app-icon>
+            <span class="navbar-label">{{ item.label }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+</nav>

@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const FUNDAMENTOS_CONTENT: Record<string, LessonContent> = {
   'fund-1': {
@@ -53,6 +54,7 @@ export class TodoListComponent {
     ],
     explainLikeIm5: `Imagina una caja de juguetes especial. Solo TÚ puedes poner o sacar juguetes, pero todos pueden mirar. signal(0) = caja con 0. miCaja.set(5) = poner 5. miCaja.update(x => x + 1) = mirar y poner uno más. Cada vez que cambias algo, todos los que miran se enteran.`,
     challenge: { description: 'Crea una lista de compras con signals. Input para agregar items y marcar como comprados.', hint: 'items.update(list => [...list, newItem])' },
+    sources: [SOURCES.apiSignal, SOURCES.guideSignals],
   },
   'fund-2': {
     definition: `En las plantillas Angular puedes leer un signal llamándolo como función: \`{{ contador() }}\`. El template se suscribe automáticamente: cuando el signal cambia, solo esa parte del DOM se actualiza. No necesitas async pipe para signals.`,
@@ -72,6 +74,7 @@ nombre = signal('');`,
     checklist: ['Siempre usar () para leer el valor en el template', 'No llamar signals dentro de @if sin ()'],
     explainLikeIm5: `En la plantilla, cada vez que quieras ver el valor de la caja mágica, di su nombre con paréntesis: nombre(). Sin paréntesis Angular no sabe que quieres el valor de dentro.`,
     challenge: { description: 'Muestra en el template el doble del valor de un signal numérico.', hint: '{{ cantidad() * 2 }}' },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal],
   },
   'fund-3': {
     definition: `Los signals pueden vivir en un servicio inyectable (providedIn: 'root' o en un componente). El servicio expone signals readonly (con .asReadonly()) y métodos que actualizan el estado. Así compartes estado entre varios componentes sin prop drilling.`,
@@ -94,6 +97,7 @@ export class CartService {
     checklist: ['¿Varios componentes necesitan este estado? → servicio', 'Exponer solo asReadonly() para quien solo debe leer'],
     explainLikeIm5: `El servicio es el dueño de la caja. Solo él puede meter o sacar cosas. Los demás solo pueden mirar (asReadonly()). Así no se pierden los juguetes.`,
     challenge: { description: 'Crea un servicio con un signal de tema (dark/light) y exponlo como readonly.', hint: 'private theme = signal(\'light\'); readonly themeState = this.theme.asReadonly();' },
+    sources: [SOURCES.apiSignal, SOURCES.guideSignals],
   },
   'fund-4': {
     definition: `WritableSignal<T> tiene .set() y .update(). Signal<T> (readonly) solo se puede leer. Para exponer un signal sin que otros lo modifiquen, usa .asReadonly(): devuelve un Signal<T> que no expone set ni update.`,
@@ -110,6 +114,7 @@ readonly countReadonly = this.count.asReadonly();
     checklist: ['Si solo debe leerse desde fuera → asReadonly()', 'Tipar correctamente en APIs públicas'],
     explainLikeIm5: `asReadonly() es como poner la caja detrás de un cristal: todos pueden ver qué hay dentro, pero nadie puede meter o sacar. Solo tú (el servicio) tienes la llave.`,
     challenge: { description: 'En tu servicio, expón un signal como readonly y comprueba que en el componente no tienes .set().', hint: 'TypeScript te impedirá llamar .set() si el tipo es Signal.' },
+    sources: [SOURCES.apiSignal],
   },
   'fund-5': {
     definition: `signal(valorInicial, opciones) acepta un segundo argumento con { equal?: (a, b) => boolean }. Por defecto usa Object.is. Si pasas una función custom, el signal solo "cambia" cuando equal devuelve false. Útil para objetos o arrays cuando quieres comparar por contenido.`,
@@ -128,6 +133,7 @@ config.set({ theme: 'dark' }); // No dispara actualización (equal devuelve true
     checklist: ['¿Mi valor es objeto/array y quiero comparar por contenido? → equal', 'Mantener inmutabilidad al actualizar'],
     explainLikeIm5: `equal es la regla que dice "esto cuenta como igual". Si pones la misma foto en el marco, la regla puede decir "no ha cambiado" y no se repinta la pared.`,
     challenge: { description: 'Crea un signal de array con equal que compare por longitud y primer elemento.', hint: 'equal: (a, b) => a.length === b.length && a[0] === b[0]' },
+    sources: [SOURCES.apiSignal],
   },
   'fund-6': {
     definition: `Los signals deben tratarse como inmutables: no mutar objetos o arrays directamente. Siempre crea una copia nueva al actualizar. items().push(x) no dispara actualización; items.update(list => [...list, x]) sí. Angular compara por referencia por defecto.`,
@@ -145,6 +151,7 @@ items.update(list => [...list, x]);`,
     checklist: ['¿Estoy creando una copia nueva al actualizar?', '¿Uso spread o filter/map en lugar de mutar?'],
     explainLikeIm5: `No cambies el juguete por dentro; trae un juguete nuevo y cambia la caja entera. Así Angular se entera de que algo cambió.`,
     challenge: { description: 'Actualiza un signal de array para quitar el primer elemento sin mutar.', hint: 'items.update(list => list.slice(1))' },
+    sources: [SOURCES.apiSignal, SOURCES.guideSignals],
   },
   'fund-7': {
     definition: `Los componentes standalone (standalone: true) pueden usar signals igual que los de módulos. No hay diferencia en la API: signal(), computed(), effect() funcionan igual. Los signals se crean en el constructor del componente o del servicio.`,
@@ -165,6 +172,7 @@ export class MyComponent {
     checklist: ['Signals creados a nivel de clase o en constructor', 'standalone: true si no usas NgModule'],
     explainLikeIm5: `Los componentes "solitos" (standalone) pueden tener sus cajas mágicas igual que los que viven en módulos. Las cajas se crean una vez cuando nace el componente.`,
     challenge: { description: 'Crea un componente standalone con un signal y muéstralo en el template.', hint: 'standalone: true, count = signal(0), {{ count() }}' },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal],
   },
   'fund-8': {
     definition: `Los signals se destruyen cuando el componente o servicio que los posee se destruye. No necesitas "desuscribirte" como con Observables: cuando el componente se va, el signal y sus dependencias se limpian. Los effects se destruyen con el contexto de inyección.`,
@@ -182,6 +190,7 @@ export class MyComponent {
     checklist: ['Effects que crean recursos → cleanup', 'No guardar referencias a signals destruidos'],
     explainLikeIm5: `Cuando te vas de la habitación, apagas la luz. Los effects tienen que "apagar" lo que encendieron (timers, suscripciones) cuando Angular los destruye.`,
     challenge: { description: 'Escribe un effect que abra una suscripción y la cancele en el cleanup.', hint: 'onCleanup(() => sub.unsubscribe())' },
+    sources: [SOURCES.apiEffect],
   },
   'fund-9': {
     definition: `Con ChangeDetectionStrategy.OnPush, el componente solo se revisa cuando cambian sus inputs (referencia), emite un evento o un Observable emite (async pipe). Con signals, cuando lees un signal en el template, Angular marca el componente para revisión cuando ese signal cambia; OnPush y signals se llevan bien.`,
@@ -202,6 +211,7 @@ export class MyComponent {
     checklist: ['OnPush + signals = actualización cuando el signal cambia', 'No depender de Zone para actualizar componentes OnPush'],
     explainLikeIm5: `OnPush dice "solo revisa cuando me avisen". Los signals son los que avisan. Cuando cambias un signal que el componente lee, Angular revisa ese componente.`,
     challenge: { description: 'Crea un componente OnPush con un signal y verifica que la UI se actualiza al cambiar el signal.', hint: 'changeDetection: ChangeDetectionStrategy.OnPush' },
+    sources: [SOURCES.guideSignals, SOURCES.changeDetection],
   },
   'fund-10': {
     definition: `Para depurar signals: (1) console.log(miSignal()) para ver el valor. (2) Angular DevTools (extensión del navegador) puede mostrar dependencias. (3) effect(() => console.log('changed', miSignal())) para ver cuándo cambia. (4) No hay "breakpoint en signal" nativo; usa logs o DevTools.`,
@@ -218,6 +228,7 @@ export class MyComponent {
     checklist: ['Usar effect solo para debug temporal o logging', 'No dejar muchos console.log en producción'],
     explainLikeIm5: `Para ver qué hay en la caja, mira con console.log(miSignal()). Para ver cuándo cambia, pon un ayudante (effect) que grite cada vez que cambie.`,
     challenge: { description: 'Añade un effect temporal que haga console.log cuando un signal cambie; luego quítalo.', hint: 'effect(() => console.log(mySignal()))' },
+    sources: [SOURCES.apiSignal, SOURCES.apiEffect],
   },
   'fund-11': {
     definition: `Para testear componentes que usan signals: (1) Crea el componente con TestBed; (2) Los signals se leen llamándolos como función en el test: component.count(); (3) Actualiza con component.count.set(1) o update(); (4) fixture.detectChanges() sigue siendo útil si hay Zone; con zoneless, la actualización puede ser automática al cambiar el signal.`,
@@ -237,6 +248,7 @@ export class MyComponent {
     checklist: ['Leer signals con () en el test', 'Actualizar estado y comprobar el resultado'],
     explainLikeIm5: `En el test miras la caja con count() y la cambias con set o update; luego miras otra vez para ver si está bien.`,
     challenge: { description: 'Escribe un test que verifique que un botón incrementa un signal y el template muestra el valor.', hint: 'click en el botón, luego expect(comp.count()).toBe(1)' },
+    sources: [SOURCES.guideSignals],
   },
   'fund-12': {
     definition: `Puedes usar signals en guards (canActivate, etc.) e interceptors: el guard o interceptor inyecta un servicio que expone signals (p. ej. authState). Lees el signal en el guard y devuelves true/false o UrlTree. Para operaciones asíncronas, el guard puede retornar un Observable que combine el signal con lógica async.`,
@@ -254,6 +266,7 @@ export class MyComponent {
     checklist: ['¿El valor que necesito es síncrono? → signal() en el guard', 'Si es async, considerar toSignal o Observable'],
     explainLikeIm5: `El guard es el portero: mira la caja (signal) para ver si puedes pasar. Si la caja dice "no", te manda a otra habitación.`,
     challenge: { description: 'Crea un guard que lea un signal isAdmin y solo permita acceso si es true.', hint: 'Inject(Router) y parseUrl("/") para redirigir' },
+    sources: [SOURCES.guideSignals],
   },
   'fund-13': {
     definition: `En SSR o hidratación: los signals se crean en el servidor con valores iniciales; ese estado puede serializarse (por ejemplo a JSON) y transferirse al cliente para que la app arranque con el mismo estado. Evita leer en el servidor signals que dependan de window o document. Para transferir estado, usa un token/valor que el cliente lea al iniciar.`,
@@ -273,6 +286,7 @@ effect(() => {
     checklist: ['Valores por defecto seguros para SSR', 'Actualizar desde almacenamiento en el cliente si hace falta'],
     explainLikeIm5: `En la tienda (servidor) la caja tiene un valor; cuando te llevas la caja a casa (cliente) puedes poner dentro lo que tenías guardado en el cajón (localStorage).`,
     challenge: { description: 'Documenta cómo transferirías un signal de "user" desde el servidor al cliente en tu app.', hint: 'TransferState o script en el HTML' },
+    sources: [SOURCES.guideSignals],
   },
   'fund-14': {
     definition: `Resumen de fundamentos: (1) signal() para estado writable; set() y update(); (2) Leer en template con nombre(); (3) Servicios con asReadonly(); (4) Inmutabilidad en arrays/objetos; (5) equal() para comparación custom; (6) Effects con cleanup; (7) OnPush y signals; (8) Debug con effect + log o DevTools. Siguiente paso: computed() para valores derivados.`,
@@ -288,6 +302,7 @@ effect(() => {
     checklist: ['Sé crear y leer signals', 'Sé actualizar sin mutar', 'Sé exponer readonly y usar effects con cuidado'],
     explainLikeIm5: `Ya sabes tener una caja, mirarla con (), cambiarla con set/update sin romper lo que hay dentro, y que el ayudante (effect) no escriba en la caja que lee. Ahora viene el amigo que calcula (computed).`,
     challenge: { description: 'Repasa las lecciones de fundamentos y escribe tres reglas que nunca olvidarás.', hint: 'Ej: siempre () para leer; nunca mutar; effect no escribe lo que lee.' },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal],
   },
   'fund-15': {
     definition: 'Practica en el Lab: contador reactivo con signal(), set() y update(). Refuerza lo visto en las lecciones de fundamentos.',
@@ -302,5 +317,6 @@ effect(() => {
     checklist: ['Abrir el Lab Contador reactivo', 'Completar incrementar, decrementar y reset', 'Ver el resultado en el preview'],
     explainLikeIm5: 'En el Lab juegas con un contador que sube y baja; tú escribes el código para que funcione.',
     challenge: { description: 'Completa el lab del contador en la pestaña Labs.', hint: 'Usa "Probar en Lab" o ve a Labs (Interactivo).' },
+    sources: [SOURCES.apiSignal, SOURCES.guideSignals],
   },
 };

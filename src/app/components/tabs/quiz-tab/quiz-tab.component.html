@@ -127,6 +127,18 @@
           @if (!isCorrect()) {
             <p class="feedback-lesson">Repasa: {{ q.relatedLesson }}</p>
           }
+          @if (q.sources && q.sources.length) {
+            <div class="feedback-sources">
+              <p class="feedback-sources-title">📚 Fuentes:</p>
+              <ul class="feedback-sources-list">
+                @for (src of q.sources; track src.url) {
+                  <li>
+                    <a [href]="src.url" target="_blank" rel="noopener noreferrer">{{ src.label }}</a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
         </div>
       }
 

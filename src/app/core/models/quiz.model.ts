@@ -6,6 +6,8 @@ export interface QuizQuestion {
   explanation: string;
   relatedLesson: string;
   tip?: string;
+  /** Fuentes oficiales que sustentan la respuesta (angular.dev, RFC, etc.) */
+  sources?: { url: string; label: string }[];
 }
 
 export interface QuizModule {

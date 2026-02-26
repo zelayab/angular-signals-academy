@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const INTRODUCCION_CONTENT: Record<string, LessonContent> = {
   'intro-1': {
@@ -94,6 +95,7 @@ Un Signal es esa pizarra mágica para tu código. Cuando cambias el número en l
 
 Y cuando quieres ver qué hay en la pizarra, solo tienes que poner los paréntesis: pizarra()`,
     challenge: { description: "Crea un Signal que almacene un nombre y un botón que agregue ' Angular' al final cada vez que se presione.", hint: "Usa update() con una función flecha: nombre.update(n => n + ' Angular')" },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal],
   },
   'intro-2': {
     definition: `Angular adoptó Signals para mejorar el rendimiento y la experiencia de desarrollo. Antes, la detección de cambios dependía de Zone.js y recorría el árbol de componentes; con Signals, solo se actualiza lo que realmente cambió. En esta lección verás por qué el equipo de Angular apostó por esta primitiva y qué problemas resuelve en aplicaciones grandes.`,
@@ -111,6 +113,7 @@ const count = signal(0);
     checklist: ['Entender por qué Angular apostó por Signals', 'Conocer el coste de Zone.js en apps grandes'],
     explainLikeIm5: `Antes Angular miraba toda la casa cada vez que sonaba el timbre. Ahora solo mira la habitación donde alguien abrió la puerta. Así gasta menos energía.`,
     challenge: { description: 'Busca en la documentación cuándo se anunciaron los Signals en Angular.', hint: 'Angular 16 introdujo Signals como experimental.' },
+    sources: [SOURCES.guideSignals, SOURCES.rfcSignals],
   },
   'intro-3': {
     definition: `Zone.js intercepta eventos asíncronos (clicks, setTimeout, HTTP) y dispara la detección de cambios en toda la aplicación. Signals permiten un modelo "zoneless": solo lo que depende de un signal que cambió se actualiza, sin necesidad de Zone.js. En esta lección verás las diferencias concretas y cuándo cada modelo tiene sentido.`,
@@ -127,6 +130,7 @@ const count = signal(0);
     checklist: ['Saber qué hace Zone.js', 'Entender que signals pueden vivir sin Zone'],
     explainLikeIm5: `Zone.js es como un vigilante que grita "¡algo pasó!" y Angular revisa todo. Con Signals, cada cosa dice "yo cambié" y solo los que la miran se asoman.`,
     challenge: { description: 'En tu proyecto, revisa si usas provideZonelessChangeDetection().', hint: 'Está en app.config.ts o main.ts.' },
+    sources: [SOURCES.guideSignals, SOURCES.changeDetection],
   },
   'intro-4': {
     definition: `Signals son ideales para: (1) estado local en componentes (contador, formulario), (2) valores derivados con computed(), (3) sincronización con APIs o almacenamiento con effect(). No sustituyen RxJS en flujos de eventos complejos; conviven con toSignal() y toObservable(). En esta lección verás exactamente en qué situaciones usar cada herramienta.`,
@@ -146,6 +150,7 @@ effect(() => { guardarPreferencia('filtro', filtro()); });`,
     checklist: ['¿Este valor es estado de UI? → signal', '¿Se calcula de otros? → computed', '¿Solo reacciono (guardar, log)? → effect'],
     explainLikeIm5: `Signals son para las cosas que tú controlas en tu app: el número del contador, lo que escribes. No son para "cada vez que alguien pulse una tecla en el mundo"; eso es más para RxJS.`,
     challenge: { description: 'Lista tres cosas en tu app que serían signal y una que sería mejor como Observable.', hint: 'Ejemplo: signal = tema oscuro; Observable = posición del scroll.' },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal, SOURCES.apiComputed, SOURCES.apiEffect],
   },
   'intro-5': {
     definition: `Signals conviven con RxJS: toSignal(observable$) convierte un Observable en un signal; toObservable(signal) hace lo contrario. Puedes usar NgRx u otros stores y exponer slices como signals. La migración es gradual: no hace falta reescribir todo. En esta lección verás cómo integrar ambos mundos.`,
@@ -163,6 +168,7 @@ const user = toSignal(userService.getUser$(), { initialValue: null });
     checklist: ['Saber que toSignal y toObservable existen', 'Migrar por partes: estado crítico primero'],
     explainLikeIm5: `Es como tener dos idiomas en casa: a veces hablas en "signal" y a veces en "Observable". Las traductoras son toSignal y toObservable. No tienes que tirar todo lo viejo.`,
     challenge: { description: 'Busca toSignal en la documentación y mira el parámetro initialValue.', hint: 'angular.dev o angular.io → toSignal' },
+    sources: [SOURCES.rxjsInterop, SOURCES.guideSignals],
   },
   'intro-6': {
     definition: `Con Signals, Angular puede actualizar solo los nodos del DOM que dependen de un valor que cambió (granularidad fina). Se reducen ciclos de detección completos y se facilita el modo zoneless, lo que mejora el rendimiento en aplicaciones grandes. En esta lección verás qué implica esto en la práctica.`,
@@ -180,6 +186,7 @@ const user = toSignal(userService.getUser$(), { initialValue: null });
     checklist: ['Entender actualización granular', 'Conocer el coste de Zone.js en apps grandes'],
     explainLikeIm5: `Antes, si cambiaba una lucecita, se revisaban todas las luces de la casa. Ahora solo se revisa la lucecita que cambió. Menos trabajo para el cerebro de la app.`,
     challenge: { description: 'En DevTools, observa cuántos nodos se repintan al cambiar un signal frente a disparar un evento con Zone.', hint: 'Usa las herramientas de rendimiento del navegador.' },
+    sources: [SOURCES.guideSignals, SOURCES.changeDetection],
   },
   'intro-7': {
     definition: `Glosario: (1) WritableSignal: signal con .set() y .update(). (2) ReadonlySignal / Signal: solo lectura, p. ej. computed(). (3) computed(): valor derivado, solo lectura. (4) effect(): función que se ejecuta cuando cambian los signals que lee. (5) asReadonly(): convierte un WritableSignal en Signal. En esta lección fijamos la terminología para el resto del curso.`,
@@ -197,6 +204,7 @@ const readOnly = count.asReadonly();       // Signal<number>`,
     checklist: ['Conocer writable vs readonly', 'Saber qué es computed y effect'],
     explainLikeIm5: `Writable = puedes escribir en la pizarra. Readonly = solo mirar. Computed = un amigo que calcula cuando le preguntas. Effect = un ayudante que hace algo cada vez que cambia la pizarra.`,
     challenge: { description: 'Explica con tus palabras la diferencia entre signal(), computed() y effect().', hint: 'signal = valor; computed = valor derivado; effect = acción.' },
+    sources: [SOURCES.apiSignal, SOURCES.apiComputed, SOURCES.apiEffect],
   },
   'intro-8': {
     definition: `Angular puede ejecutarse sin Zone.js (zoneless) usando provideZonelessChangeDetection() en app.config. En ese modo, la detección de cambios se dispara cuando los signals cambian o cuando hay eventos que Angular conoce. Signals son la base para que la UI se actualice correctamente. En esta lección verás cómo activarlo y qué implica.`,
@@ -213,6 +221,7 @@ providers: [provideZonelessChangeDetection(), ...]`,
     checklist: ['Saber qué es zoneless', 'Entender que sin Zone hay que usar signals para reactividad'],
     explainLikeIm5: `Sin Zone.js, nadie grita "algo pasó". Tú tienes que decir "cambié esto" con set() o update(). La app solo se entera cuando tú avisas.`,
     challenge: { description: 'Busca provideZonelessChangeDetection en la documentación.', hint: 'angular.dev → Change Detection' },
+    sources: [SOURCES.guideSignals, SOURCES.changeDetection],
   },
   'intro-9': {
     definition: `Comparación breve: (1) React: useState/useReducer son estado local; Signals son más granulares y no necesitan Provider. (2) Vue: reactivity similar con ref/computed; Angular signals son análogos. (3) Solid: Signals como primitiva; Angular se inspiró en ideas similares. Cada framework tiene su estilo; Angular signals encajan en la inyección y el ecosistema existente. En esta lección verás las similitudes y diferencias.`,
@@ -231,6 +240,7 @@ const double = computed(() => count() * 2);
     checklist: ['Conocer similitudes con otros frameworks', 'Aprovechar la integración con Angular (DI, templates)'],
     explainLikeIm5: `Otros frameworks también tienen "cajas mágicas" que avisan cuando cambian. Angular tiene las suyas y se llevan bien con el resto de Angular (inyección, plantillas).`,
     challenge: { description: 'Compara en una tabla signal/computed/effect con tu framework anterior (si tienes).', hint: 'Busca "Angular signals vs React" o "vs Vue".' },
+    sources: [SOURCES.guideSignals],
   },
   'intro-10': {
     definition: `Roadmap: input() y output() ya son signals/funciones en Angular 17+. model() para two-way binding. Futuras APIs pueden incluir más integración con el router y formularios. La documentación oficial (angular.dev) y el blog de Angular anuncian novedades. En esta lección verás qué está disponible hoy y qué puede venir.`,
@@ -248,6 +258,7 @@ value = model<string>('');`,
     checklist: ['Revisar angular.dev para la versión que usas', 'Seguir el blog para novedades'],
     explainLikeIm5: `Angular va añadiendo más piezas para que las cajas mágicas funcionen con todo: formularios, rutas, etc. La documentación te dice qué hay hoy.`,
     challenge: { description: 'Visita angular.dev y localiza la guía de Signals.', hint: 'Docs → Guides → Signals' },
+    sources: [SOURCES.guideSignals, SOURCES.apiInput, SOURCES.apiOutput, SOURCES.apiModel],
   },
   'intro-11': {
     definition: `Requisitos: Angular 16+ para signals (experimental), Angular 17+ para estabilidad. No necesitas instalar nada extra; signal, computed y effect vienen en @angular/core. Para zoneless necesitas provideZonelessChangeDetection() y asegurarte de que el estado reactivo esté en signals. En esta lección verás cómo dar los primeros pasos en tu proyecto.`,
@@ -263,6 +274,7 @@ value = model<string>('');`,
     checklist: ['Verificar versión de Angular (ng version)', 'Empezar por un módulo pequeño'],
     explainLikeIm5: `Solo necesitas tener Angular actualizado. Las cajas mágicas ya vienen en la caja de herramientas. Abre el manual (docs) y empieza por una pieza.`,
     challenge: { description: 'Ejecuta ng version y anota la versión de @angular/core.', hint: 'Debe ser 17 o superior para producción con signals.' },
+    sources: [SOURCES.guideSignals],
   },
   'intro-12': {
     definition: `Recursos: (1) angular.dev - documentación oficial y guías. (2) Angular Blog - anuncios y RFCs. (3) YouTube - canal de Angular. (4) Comunidad en Discord/X. (5) Repositorios de ejemplo en GitHub. Usa la búsqueda del sitio y las etiquetas "signals" para filtrar. En esta lección tienes todo lo necesario para seguir aprendiendo.`,
@@ -279,6 +291,7 @@ value = model<string>('');`,
     checklist: ['Tener angular.dev en favoritos', 'Seguir al menos un canal de la comunidad'],
     explainLikeIm5: `Cuando no sepas algo, pregunta en la documentación o a la comunidad. Hay mucha gente que ya usó las cajas mágicas y te puede ayudar.`,
     challenge: { description: 'Abre angular.dev, busca "Signals" y guarda el enlace de la guía.', hint: 'Guía: Introduction to Angular Signals' },
+    sources: [SOURCES.guideSignals, SOURCES.blogAngular],
   },
   'intro-13': {
     definition: `Esta academia tiene tres pilares: Lecciones (teoría y ejemplos), Labs (código interactivo con editor y preview) y Quiz (preguntas para afianzar). Usa el menú lateral para cambiar de sección; la barra superior para cambiar entre Lecciones, Labs y Quiz. Las lecciones con botón "Probar en Lab" te llevan directamente al Lab correspondiente.`,
@@ -295,5 +308,6 @@ value = model<string>('');`,
     checklist: ['Conocer las tres pestañas', 'Saber que "Probar en Lab" abre el Lab', 'Saber que Recursos tiene enlaces externos'],
     explainLikeIm5: 'Esta academia tiene tres habitaciones: una para leer, una para programar y una para responder preguntas. El menú lateral te lleva a cada tema.',
     challenge: { description: 'Abre una lección de Fundamentos y haz clic en "Probar en Lab" para ir al Lab del contador.', hint: 'Lecciones → Fundamentos → Crear tu primer Signal.' },
+    sources: [SOURCES.guideSignals],
   },
 };

@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AppStateService } from './core/services/app-state.service';
 import { AppHeaderComponent } from './components/app-header/app-header.component';
+import { AppFooterComponent } from './components/app-footer/app-footer.component';
+import { AppNavbarComponent } from './components/app-navbar/app-navbar.component';
 import { AppSidebarComponent } from './components/app-sidebar/app-sidebar.component';
 import { MobileNavComponent } from './components/mobile-nav/mobile-nav.component';
 import { LessonsTabComponent } from './components/tabs/lessons-tab/lessons-tab.component';
@@ -21,6 +23,8 @@ const TABS: { id: ActiveTab; label: string; shortLabel: string }[] = [
   standalone: true,
   imports: [
     AppHeaderComponent,
+    AppFooterComponent,
+    AppNavbarComponent,
     AppSidebarComponent,
     MobileNavComponent,
     LessonsTabComponent,
@@ -39,6 +43,7 @@ export class App {
   readonly activeTab = this.appState.tab;
   readonly focusMode = this.appState.focus;
   readonly darkMode = this.appState.dark;
+  readonly layoutMode = this.appState.layoutMode;
   readonly tabs = TABS;
 
   constructor() {

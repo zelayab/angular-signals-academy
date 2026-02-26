@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const INPUT_OUTPUT_CONTENT: Record<string, LessonContent> = {
   'io-1': {
@@ -19,6 +20,7 @@ export class CardComponent {
     checklist: ['¿El input es obligatorio? → input.required()', 'En template siempre inputName()'],
     explainLikeIm5: `input() es como una ventanita por la que tu papá te pasa un juguete. Tú solo puedes mirar (leer con ()); no puedes devolverlo por la ventana. El juguete puede cambiar y tú lo ves al instante.`,
     challenge: { description: 'Crea un componente con un input title y muéstralo en el template.', hint: 'title = input<string>(); en el template: {{ title() }}' },
+    sources: [SOURCES.apiInput, SOURCES.guideSignals],
   },
   'io-2': {
     definition: `output() declara un evento que el componente puede emitir. Se usa con emit(): outputName.emit(value). El padre escucha con (outputName)="handler($event)". Es la evolución de EventEmitter con una API más simple.`,
@@ -39,6 +41,7 @@ export class ItemComponent {
     checklist: ['El nombre del output describe el evento', 'Emitir valores tipados (number, string, objeto)'],
     explainLikeIm5: `output() es como un timbre que tú pulsas para avisar a tu papá. Tú emites (emit) y él escucha (delete)="hacerAlgo". No pasas el juguete por la ventana; avisas que algo pasó.`,
     challenge: { description: 'Crea un componente con un output clicked que emita un número al hacer clic en un botón.', hint: 'clicked = output<number>(); (click)="clicked.emit(1)"' },
+    sources: [SOURCES.apiOutput],
   },
   'io-3': {
     definition: `input.required() declara un input obligatorio. Si el padre no lo pasa, Angular lanza en desarrollo. Úsalo cuando el componente no tenga sentido sin ese valor.`,
@@ -54,6 +57,7 @@ export class ItemComponent {
     checklist: ['¿El componente necesita siempre este valor? → required()', 'El padre debe pasar el binding'],
     explainLikeIm5: `required() es como decir "sin este juguete no juego". El papá tiene que darte el juguete siempre.`,
     challenge: { description: 'Crea un componente con un input required y otro opcional.', hint: 'title = input.required<string>(); count = input<number>();' },
+    sources: [SOURCES.apiInput],
   },
   'io-4': {
     definition: `Puedes pasar una función transform al input: input({ transform: (v) => ... }). El valor que recibe el componente es el resultado de la transformación. Útil para convertir strings a números, parsear fechas, etc.`,
@@ -69,6 +73,7 @@ export class ItemComponent {
     checklist: ['La transform debe ser pura y sin side effects', 'Manejar valores inválidos si el atributo puede ser incorrecto'],
     explainLikeIm5: `La transform es como un traductor: el papá te pasa "cinco" y tú lo traduces a 5 antes de guardarlo en la caja.`,
     challenge: { description: 'Crea un input que transforme "true"/"false" (string) a boolean.', hint: 'input(false, { transform: (v) => v === "true" })' },
+    sources: [SOURCES.apiInput],
   },
   'io-5': {
     definition: `model() declara un two-way binding: el componente recibe un valor y puede emitir cambios. model(\'value\') en el hijo; en el padre [(value)]="miSignal". Internamente es un input + output que emite cuando el valor cambia. El hijo lee con value() y actualiza con valueChange.emit(nuevoValor) o usando el binding de modelo.`,
@@ -86,6 +91,7 @@ value = model('');
     checklist: ['model() para two-way', 'Padre usa [(nombre)]'],
     explainLikeIm5: `model es una ventanita por la que pasas algo y tu papá puede pasarte algo nuevo; cuando tú cambias lo que ves, se lo dices (emit) y él actualiza.`,
     challenge: { description: 'Crea un componente con model(\'count\') y un botón que emita count + 1 al hacer clic.', hint: 'countChange.emit(count() + 1)' },
+    sources: [SOURCES.apiModel],
   },
   'io-6': {
     definition: `Puedes derivar estado del componente a partir de inputs usando computed(). fullName = computed(() => \`\${firstName()} \${lastName()}\`) donde firstName y lastName son inputs. Cualquier computed que lea inputs se actualizará cuando el padre cambie los bindings.`,
@@ -102,6 +108,7 @@ displayTitle = computed(() => \`\${this.title()} - \${this.subtitle()}\`);`,
     checklist: ['Valor derivado de inputs = computed que lee inputs', 'No escribir en signals desde effect que solo lee inputs'],
     explainLikeIm5: `Lo que tu papá te pasa (inputs) lo puedes combinar en tu cabeza (computed) y mostrar el resultado. Cuando él cambie lo que te pasa, tu resultado se actualiza solo.`,
     challenge: { description: 'Tienes input min e input max; crea un computed range que devuelva "min - max".', hint: 'computed(() => `${min()} - ${max()}`)' },
+    sources: [SOURCES.apiInput, SOURCES.apiComputed],
   },
   'io-7': {
     definition: `Puedes dar un alias al input: input({ alias: \'nombrePublico\' }). Desde el template del padre usas [nombrePublico]="valor". Útil para mantener nombres internos cortos o para compatibilidad con nombres que ya usaba el componente.`,
@@ -117,6 +124,7 @@ displayTitle = computed(() => \`\${this.title()} - \${this.subtitle()}\`);`,
     checklist: ['alias para nombre público distinto', 'Documentar en comentarios o doc'],
     explainLikeIm5: `Por fuera la ventanita se llama "avatar"; por dentro tú la llamas "foto". Es la misma ventanita con dos nombres.`,
     challenge: { description: 'Crea un input con alias "disabled" que internamente se llame isDisabled.', hint: 'input({ alias: \'disabled\' })' },
+    sources: [SOURCES.apiInput],
   },
   'io-8': {
     definition: `output() reemplaza a EventEmitter en la API moderna. Si migras: antes tenías @Output() delete = new EventEmitter<number>(); ahora delete = output<number>(). Emitir sigue siendo delete.emit(id). El padre escucha igual: (delete)="onDelete($event)". No necesitas EventEmitter ni subscribe; output() devuelve un objeto con emit().`,
@@ -136,6 +144,7 @@ this.delete.emit(id);`,
     checklist: ['output() reemplaza EventEmitter', 'Padre (evento)="handler" igual'],
     explainLikeIm5: `Antes el timbre era un EventEmitter; ahora es output(). Sigue siendo un timbre: pulsas emit y tu papá escucha igual.`,
     challenge: { description: 'Migra un componente que tenga un @Output() EventEmitter a output().', hint: 'Quita @Output() y new EventEmitter; pon output<T>().' },
+    sources: [SOURCES.apiOutput],
   },
   'io-9': {
     definition: `content() y contentChildren() pueden usarse con signals en componentes que proyectan contenido. content() devuelve el contenido proyectado (TemplateRef o similar); contentChildren() con read puede devolver una lista. La integración con signals puede ser mediante queries que se exponen como signals en APIs más recientes. Consulta la documentación de tu versión para content() como signal.`,
@@ -152,6 +161,7 @@ tabs = contentChildren(TabComponent);
     checklist: ['Verificar API de content/contentChildren en tu versión', 'Leer después de que la vista esté estable'],
     explainLikeIm5: `content es lo que tu papá te mete dentro del sobre (proyección). Puedes mirar cuántas cosas te metió (contentChildren) y usarlas.`,
     challenge: { description: 'Busca en la documentación contentChildren y si hay versión signal.', hint: 'angular.dev → contentChildren' },
+    sources: [SOURCES.guideSignals],
   },
   'io-10': {
     definition: `viewChild() y viewChildren() en Angular pueden devolver signals cuando usas la opción signal: true (o la API equivalente en tu versión). viewChild(MyDirective, { signal: true }) devuelve un Signal que se actualiza cuando la vista está lista. Así evitas undefined en el primer render si lees en un effect.`,
@@ -167,6 +177,7 @@ tabs = contentChildren(TabComponent);
     checklist: ['viewChild con signal: true si quieres Signal', 'Comprobar undefined al leer'],
     explainLikeIm5: `viewChild es mirar dentro de tu habitación y encontrar un juguete por nombre. Al principio puede no estar; cuando Angular pone la habitación, ya está y el signal te avisa.`,
     challenge: { description: 'Usa viewChild con signal para obtener un input y haz focus cuando el componente se inicie.', hint: 'effect con read del signal y focus si existe' },
+    sources: [SOURCES.guideSignals],
   },
   'io-11': {
     definition: `En listas: cada ítem puede tener input (item, selected) y output (itemClick, remove). El padre mantiene items = signal([]) y selectedId = signal<string | null>(null). Pasa [item]="item" [selected]="selectedId() === item.id" y (itemClick)="selectedId.set(item.id)" (remove)="removeItem(item.id)". Los hijos son "presentacionales"; el estado vive en el padre.`,
@@ -185,6 +196,7 @@ tabs = contentChildren(TabComponent);
     checklist: ['Estado de lista en el padre (signals)', 'Hijo solo inputs y outputs'],
     explainLikeIm5: `El padre tiene la lista de juguetes y cuál está elegido. A cada hijo le pasa su juguete y "¿estás elegido?". El hijo solo avisa: "me tocaron" o "me borraron".`,
     challenge: { description: 'Implementa una lista con selección: el padre tiene selectedId signal; los hijos emiten select y el padre actualiza selectedId.', hint: '(select)="selectedId.set(item.id)"' },
+    sources: [SOURCES.apiInput, SOURCES.apiOutput],
   },
   'io-12': {
     definition: `Resumen Input/Output con Signals: (1) input() y input.required(); (2) output() con emit(); (3) model() para two-way; (4) transform y alias en input; (5) computed para derivar de inputs; (6) viewChild/contentChildren con signal cuando aplique. Migración: reemplazar @Input/@Output por input()/output(); el padre puede seguir igual.`,
@@ -203,6 +215,7 @@ display = computed(() => title() + ': ' + value());`,
     checklist: ['input()/output()/model() en componentes nuevos', 'Siempre () para leer inputs'],
     explainLikeIm5: `Resumen: ventanitas (input), timbre (output), ventanita que se puede pasar cosas para allá y para acá (model). Y el amigo que calcula (computed) con lo que te pasan.`,
     challenge: { description: 'Revisa un componente tuyo y lista qué tendría que ser input(), output() o model().', hint: 'Cada @Input → input(); cada @Output → output().' },
+    sources: [SOURCES.apiInput, SOURCES.apiOutput, SOURCES.apiModel],
   },
   'io-13': {
     definition: 'Practica en el Lab: formulario con validación. Combina inputs (email, password) con computed (isEmailValid, strength, canSubmit) para un formulario reactivo.',
@@ -217,5 +230,6 @@ display = computed(() => title() + ': ' + value());`,
     checklist: ['Abrir el Lab Formulario con validación', 'Ver cómo computed deriva isEmailValid y canSubmit', 'Probar email válido/inválido'],
     explainLikeIm5: 'En el Lab el formulario te dice si el email está bien y si puedes enviar.',
     challenge: { description: 'Completar el lab de validación en Labs.', hint: 'Probar en Lab o pestaña Labs.' },
+    sources: [SOURCES.guideSignals],
   },
 };

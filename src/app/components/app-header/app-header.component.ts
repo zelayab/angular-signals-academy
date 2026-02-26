@@ -18,6 +18,7 @@ export class AppHeaderComponent {
   readonly searchFocused = signal(false);
   readonly focusMode = this.appState.focus;
   readonly darkMode = this.appState.dark;
+  readonly layoutMode = this.appState.layoutMode;
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
@@ -50,5 +51,9 @@ export class AppHeaderComponent {
 
   toggleDark(): void {
     this.appState.toggleDarkMode();
+  }
+
+  toggleLayout(): void {
+    this.appState.toggleLayoutMode();
   }
 }

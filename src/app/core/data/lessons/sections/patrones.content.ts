@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const PATRONES_CONTENT: Record<string, LessonContent> = {
   'pat-1': {
@@ -20,6 +21,7 @@ export class CartStore {
     checklist: ['Un solo lugar posee el estado', 'Exponer solo readonly y métodos'],
     explainLikeIm5: `El store es el dueño del carrito. Solo él puede meter o sacar cosas. Los demás solo miran y dicen "añade esto" (llamando a addItem).`,
     challenge: { description: 'Crea un servicio "store" con un signal de ítems y un computed de total; expón solo readonly.', hint: 'private items = signal([]); readonly items = this.items.asReadonly();' },
+    sources: [SOURCES.guideSignals, SOURCES.apiSignal],
   },
   'pat-2': {
     definition: `Un servicio de estado centralizado expone signals de solo lectura (asReadonly()) y métodos que actualizan el estado. Los componentes inyectan el servicio y leen los signals; no tienen acceso a set() o update(). Así evitas que cualquier componente modifique el estado por error.`,
@@ -36,6 +38,7 @@ login(creds: Credentials) { ... this.user.set(await api.login(creds)); }`,
     checklist: ['Un único servicio para ese estado', 'Solo métodos públicos para modificar'],
     explainLikeIm5: `El servicio es el guardián. Tú le dices "quiero hacer login" y él actualiza la caja. Nadie más puede abrir la caja.`,
     challenge: { description: 'Refactoriza un servicio que expone un signal writable para exponer solo readonly y un método setValue().', hint: 'asReadonly() + método que hace this.privateSignal.set(v)' },
+    sources: [SOURCES.apiSignal],
   },
   'pat-3': {
     definition: `Feature stores: en vez de un solo servicio global, un servicio por "feature" (carrito, usuario, preferencias). Cada feature store tiene sus signals y métodos; se inyecta solo donde hace falta. Así el estado está cerca de quien lo usa y no todo en root.`,
@@ -56,6 +59,7 @@ export class CartStore {
     checklist: ['Un store por feature lógico', 'Inyectar solo donde se usa'],
     explainLikeIm5: `En vez de una caja enorme con todo, tienes una caja para el carrito, otra para el usuario. Cada una en su habitación.`,
     challenge: { description: 'Divide un servicio grande en dos feature stores (ej. CartStore y WishlistStore).', hint: 'Cada store con sus signals y métodos.' },
+    sources: [SOURCES.guideSignals],
   },
   'pat-4': {
     definition: `Usa computed para vistas derivadas: listas filtradas, ordenadas, paginadas. items = signal([]); query = signal(''); filtered = computed(() => items().filter(...)); sorted = computed(() => [...filtered()].sort(...)); paginated = computed(() => sorted().slice(offset(), offset() + pageSize()). Así la UI solo lee paginated() y todo es reactivo.`,
@@ -72,6 +76,7 @@ paginated = computed(() => sorted().slice(page() * size(), (page() + 1) * size()
     checklist: ['Cada paso (filter, sort, slice) en computed', 'Template lee el último computed'],
     explainLikeIm5: `Primero filtras, luego ordenas, luego coges una página. Cada paso es un amigo (computed) que calcula cuando preguntas.`,
     challenge: { description: 'Implementa filtered, sorted y paginated con signals query, sortBy, page, pageSize.', hint: 'Tres computed encadenados.' },
+    sources: [SOURCES.apiComputed],
   },
   'pat-5': {
     definition: `Reaccionar a params o data del router: usa toSignal(route.paramMap) o toSignal(route.data). params = toSignal(route.paramMap, { initialValue: ... }). id = computed(() => params().get('id')). Navegar con router.navigate cuando un signal cambie puede hacerse con effect (allowSignalWrites) o desde un método que lee el signal.`,
@@ -88,6 +93,7 @@ item = resource(this.id, (id) => id ? this.api.getItem(id) : of(null));`,
     checklist: ['toSignal(route.paramMap) o route.data', 'computed para derivar id o datos'],
     explainLikeIm5: `La ruta (URL) te dice en qué habitación estás. Con toSignal miras esa información como una caja que cambia cuando navegas.`,
     challenge: { description: 'Lee el param "id" de la ruta como signal y usa ese id para cargar un recurso.', hint: 'toSignal(route.paramMap), computed para id.' },
+    sources: [SOURCES.rxjsInterop],
   },
   'pat-6': {
     definition: `Patrón reducer: en vez de varias actualizaciones ad hoc, una función pura (reducer) que recibe estado y acción y devuelve nuevo estado. items.update(state => reducer(state, action)). Así la lógica de actualización está centralizada y es fácil de testear.`,
@@ -109,6 +115,7 @@ addItem(item: Item) { this.items.update(s => cartReducer(s, { type: 'add', paylo
     checklist: ['Reducer puro', 'update(state => reducer(state, action))'],
     explainLikeIm5: `En vez de "mete esto" y "saca aquello", tienes un libro de reglas (reducer): "si me dicen add, devuelvo la caja con uno más". Así todas las reglas están en un sitio.`,
     challenge: { description: 'Implementa un reducer para una lista de tareas (add, toggle, remove) y úsalo con update().', hint: 'tasks.update(s => taskReducer(s, { type, payload }))' },
+    sources: [SOURCES.apiSignal],
   },
   'pat-7': {
     definition: `Separar capa de presentación y estado: los componentes "tontos" reciben inputs y emiten outputs; el estado (signals) vive en un servicio o en un componente contenedor. El contenedor inyecta el store, lee signals y pasa valores a los hijos; los hijos emiten eventos y el contenedor llama al store.`,
@@ -128,6 +135,7 @@ remove(id: string) { this.cartStore.removeItem(id); }
     checklist: ['Estado en store o contenedor', 'Presentacional solo input/output'],
     explainLikeIm5: `El contenedor tiene las cajas (store); el hijo solo muestra lo que le pasan y avisa cuando tocan algo. Las cajas no están en el hijo.`,
     challenge: { description: 'Refactoriza un componente que tenga signals internos a: contenedor con store + hijo presentacional.', hint: 'Mover signals al store; hijo con input/output.' },
+    sources: [SOURCES.guideSignals],
   },
   'pat-8': {
     definition: `Source of truth: un solo lugar posee cada dato. Si el carrito vive en CartStore, todos leen cartItems() de ahí; nadie tiene una copia local del carrito que pueda desincronizarse. Si necesitas "copia para editar", puede ser un signal derivado o un snapshot al abrir un modal.`,
@@ -149,6 +157,7 @@ user = this.userStore.userState;`,
     checklist: ['Un dueño por dato', 'Leer siempre del mismo sitio'],
     explainLikeIm5: `Solo hay una pizarra del carrito. Todos miran esa pizarra. No tengas fotos de la pizarra en cada habitación que luego no coincidan.`,
     challenge: { description: 'Identifica en tu app un dato que esté en dos sitios y refactoriza a una sola fuente.', hint: 'Un store o un servicio con signal.' },
+    sources: [SOURCES.guideSignals],
   },
   'pat-9': {
     definition: `Si construyes una librería reutilizable, expón API con signals: inputs como input(), estado interno como signals, valores derivados como computed. Así los consumidores usan tu componente o servicio con la misma mentalidad que el resto de Angular. Documenta qué signals son readonly y cuáles son writable (si aplica).`,
@@ -168,6 +177,7 @@ export class MyLibComponent {
     checklist: ['input/output/model para API', 'computed para derivados expuestos'],
     explainLikeIm5: `Cuando vendes un juguete (librería), la caja que das tiene ventanitas (inputs) y timbre (outputs). No des la llave de la caja (writable) a cualquiera.`,
     challenge: { description: 'Diseña la API pública de un componente de lista (inputs, outputs, computed expuestos).', hint: 'data input, selection model, filtered computed.' },
+    sources: [SOURCES.apiInput, SOURCES.apiOutput],
   },
   'pat-10': {
     definition: `Resumen patrones: (1) State en servicio con asReadonly(); (2) Feature stores por dominio; (3) Computed para vistas derivadas (filter, sort, paginate); (4) Router con toSignal(paramMap); (5) Reducer con update(); (6) Presentación vs contenedor; (7) Una sola fuente de verdad; (8) Librerías con API en signals. Elige según tamaño de app y equipo.`,
@@ -186,6 +196,7 @@ export class MyLibComponent {
     checklist: ['Una fuente de verdad', 'Computed para derivados', 'Exponer readonly'],
     explainLikeIm5: `Resumen: una caja por cosa importante, un amigo (computed) que calcula listas, y que solo el dueño (store) pueda escribir. Elige cuántas cajas según lo grande que sea la casa.`,
     challenge: { description: 'Escribe en tres líneas qué patrones usas ya en tu app y cuál añadirías primero.', hint: 'Ej: store con readonly; falta reducer para el carrito.' },
+    sources: [SOURCES.guideSignals],
   },
   'pat-11': {
     definition: 'Practica en el Lab: estado derivado complejo (carrito). signal de items; computed para subtotal, IVA y total. Refuerza el patrón "una fuente de verdad + vistas derivadas".',
@@ -200,5 +211,6 @@ export class MyLibComponent {
     checklist: ['Abrir el Lab Estado derivado complejo', 'Ver subtotal, IVA y total como computed', 'Entender dependencias automáticas'],
     explainLikeIm5: 'En el Lab el total del carrito se calcula solo cuando cambian los items.',
     challenge: { description: 'Completar el lab del carrito en Labs.', hint: 'Probar en Lab o pestaña Labs.' },
+    sources: [SOURCES.guideSignals],
   },
 };

@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const QUIZ_CONTENT: Record<string, LessonContent> = {
   'quiz-fundamentos': {
@@ -14,6 +15,7 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a la pestaña Quiz', 'Seleccionar Fundamentos de Signals', 'Responder las preguntas'],
     explainLikeIm5: 'El quiz es un juego de preguntas para ver si recuerdas lo que aprendiste.',
     challenge: { description: 'Completar el quiz de Fundamentos en la pestaña Quiz.', hint: 'Pestaña "Quiz" en la barra superior.' },
+    sources: [SOURCES.guideSignals],
   },
   'quiz-effects': {
     definition: 'Quiz sobre effect(): side effects, cleanup y buenas prácticas.',
@@ -28,6 +30,7 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Quiz', 'Abrir Effects y Side Effects', 'Responder sobre effect() y loops'],
     explainLikeIm5: 'Preguntas sobre cuándo y cómo usar effect() sin equivocarte.',
     challenge: { description: 'Completar el quiz de Effects en la pestaña Quiz.', hint: 'Pestaña Quiz.' },
+    sources: [SOURCES.apiEffect],
   },
   'quiz-computed': {
     definition: 'Quiz sobre computed(): valores derivados, lazy evaluation y listas filtradas.',
@@ -42,6 +45,7 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Quiz', 'Abrir Computed', 'Responder sobre computed() y lazy evaluation'],
     explainLikeIm5: 'Preguntas sobre el "amigo que calcula" (computed).',
     challenge: { description: 'Completar el quiz Computed.', hint: 'Pestaña Quiz.' },
+    sources: [SOURCES.apiComputed],
   },
   'quiz-input-output': {
     definition: 'Quiz sobre input(), output() y model() con Signals.',
@@ -56,6 +60,7 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Quiz', 'Abrir Input/Output + Signals', 'Responder sobre input() y model()'],
     explainLikeIm5: 'Preguntas sobre las "ventanitas" (inputs) y el timbre (output).',
     challenge: { description: 'Completar el quiz Input/Output.', hint: 'Pestaña Quiz.' },
+    sources: [SOURCES.apiInput, SOURCES.apiOutput],
   },
   'quiz-anti-patrones': {
     definition: 'Quiz sobre anti-patrones: loops en effect, mutación, asReadonly y señales estables.',
@@ -70,6 +75,7 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Quiz', 'Abrir Anti-patrones', 'Responder sobre loops, mutación y asReadonly'],
     explainLikeIm5: 'Preguntas sobre lo que no hay que hacer.',
     challenge: { description: 'Completar el quiz Anti-patrones.', hint: 'Pestaña Quiz.' },
+    sources: [SOURCES.guideSignals],
   },
   'quiz-avanzado': {
     definition: 'Quiz de patrones avanzados: RxJS, anti-patrones y mejores prácticas.',
@@ -84,5 +90,6 @@ export const QUIZ_CONTENT: Record<string, LessonContent> = {
     checklist: ['Ir a Quiz', 'Abrir Patrones Avanzados', 'Responder sobre toSignal y anti-patrones'],
     explainLikeIm5: 'El quiz más difícil: para cuando ya sabes bastante de Signals.',
     challenge: { description: 'Completar el quiz Patrones Avanzados.', hint: 'Pestaña Quiz.' },
+    sources: [SOURCES.guideSignals],
   },
 };

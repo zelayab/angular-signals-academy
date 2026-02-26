@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const EFFECTS_CONTENT: Record<string, LessonContent> = {
   'eff-1': {
@@ -20,6 +21,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Solo usar effect para side effects', 'No modificar signals que el effect lee sin allowSignalWrites'],
     explainLikeIm5: `Un effect es un ayudante que cada vez que cambias algo en la pizarra (el signal), va y hace una tarea: guardar en un cajón, avisar a alguien, etc. No debe escribir en la pizarra él mismo o se volvería loco.`,
     challenge: { description: 'Crea un effect que guarde el valor de un signal de texto en localStorage cuando cambie.', hint: 'effect(() => { localStorage.setItem("key", miSignal()); });' },
+    sources: [SOURCES.apiEffect, SOURCES.guideSignals],
   },
   'eff-2': {
     definition: `Un effect puede devolver una función de cleanup. Angular la ejecuta antes de la próxima ejecución del effect o cuando el effect se destruye. Úsala para cancelar suscripciones, timers o listeners y evitar memory leaks.`,
@@ -38,6 +40,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Cada recurso creado en el effect → cleanup', 'Documentar qué se limpia'],
     explainLikeIm5: `Cuando el effect termina o se va, tiene que recoger sus juguetes: parar el reloj, colgar el teléfono. Si no, los juguetes siguen ahí y la memoria se llena.`,
     challenge: { description: 'Escribe un effect que abra setInterval y devuelva una función que haga clearInterval en el cleanup.', hint: 'onCleanup(() => clearInterval(timerId));' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-3': {
     definition: `Por defecto no puedes escribir en un signal dentro de un effect (evita loops). Si necesitas hacerlo, usa effect(..., { allowSignalWrites: true }). Usa esto solo cuando sepas lo que haces: escribir un signal que el effect lee puede causar un bucle infinito.`,
@@ -56,6 +59,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['¿Realmente necesito escribir un signal aquí?', 'El signal que escribo no debe ser leído por este effect'],
     explainLikeIm5: `allowSignalWrites es un permiso especial: "puedo escribir en la pizarra". Si escribes algo que tú mismo lees, te preguntas "¿qué puse?" y vuelves a escribir y nunca acabas. Solo escribe cosas que no vayas a leer en el mismo effect.`,
     challenge: { description: 'Identifica un caso donde allowSignalWrites sea seguro (ej: sincronizar URL con un signal) y otro donde cause loop.', hint: 'Seguro: escribir en un signal que el effect no lee. Loop: escribir en el mismo que lees.' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-4': {
     definition: `Usa effect() para persistir estado en localStorage o sincronizar con el backend. Dentro del effect lees los signals que quieres persistir y llamas a localStorage.setItem o a un servicio HTTP. Opcional: onCleanup no suele hacer falta para localStorage; sí para cancelar peticiones HTTP si el effect se re-ejecuta antes de que termine la anterior.`,
@@ -73,6 +77,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Persistencia = effect', 'Si usas HTTP, considera cleanup para cancelar'],
     explainLikeIm5: `Cada vez que cambias la pizarra (theme, lang), el ayudante (effect) va al cajón (localStorage) y guarda una foto. Así cuando vuelves, la foto está ahí.`,
     challenge: { description: 'Crea un effect que guarde en localStorage un signal de "última búsqueda" cuando cambie.', hint: 'effect(() => localStorage.setItem("lastSearch", search()))' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-5': {
     definition: `untracked(fn) ejecuta fn sin registrar las lecturas de signals que haya dentro como dependencias del effect. Útil cuando quieres leer un signal "solo para decidir" pero no quieres que el effect se re-ejecute cuando ese signal cambie.`,
@@ -92,6 +97,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['untracked solo para lecturas que no deben disparar el effect', 'Documentar por qué ese signal no es dependencia'],
     explainLikeIm5: `A veces el ayudante mira una pizarra solo para decidir qué hacer, pero no quiere que cuando esa pizarra cambie tenga que volver a trabajar. Esa mirada "no cuenta" (untracked).`,
     challenge: { description: 'Escribe un effect que reaccione a count() pero lea enabled() con untracked para decidir si hace log.', hint: 'if (untracked(() => enabled())) console.log(count())' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-6': {
     definition: `Puedes reaccionar a signals de formulario (valores, touched, errors) con effect(). Por ejemplo: effect(() => { if (form.valid()) submitButton.disabled = false; }) para habilitar un botón. O effect que lee email() y password() y llama a un servicio de validación. No abuses: la validación reactiva suele ir mejor en computed (isValid) y el effect solo para side effects (habilitar/deshabilitar algo externo).`,
@@ -112,6 +118,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Validación derivada = computed', 'Efectos secundarios (DOM, mensaje) = effect'],
     explainLikeIm5: `El ayudante mira si el formulario está listo (computed) y cuando está listo hace algo: quitar el candado del botón. No escribe en el formulario él mismo.`,
     challenge: { description: 'Combina computed canSubmit (email válido y password largo) y un effect que haga focus en el primer error cuando canSubmit pase a false.', hint: 'effect que lee canSubmit() y si es false hace focus en el primer invalid.' },
+    sources: [SOURCES.apiEffect, SOURCES.apiComputed],
   },
   'eff-7': {
     definition: `effect() es adecuado para analytics y logging: cuando cambien ciertos signals (p. ej. página actual, filtros aplicados), registrar un evento. Dentro del effect lees los signals y llamas a tu servicio de analytics. Evita loggear en cada cambio si es muy frecuente; puedes usar untracked para leer un "contexto" que no dispare el effect.`,
@@ -130,6 +137,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['Analytics = effect', 'Considerar debounce o solo eventos relevantes'],
     explainLikeIm5: `El ayudante cada vez que cambias la pizarra (página o filtros) manda una postal a la oficina de estadísticas. Así saben qué hace la gente.`,
     challenge: { description: 'Añade un effect que envíe un evento "lab_completed" cuando completedLabs() tenga un nuevo id.', hint: 'Comparar longitud o último id; log solo cuando cambie.' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-8': {
     definition: `Puedes mantener la URL (query params o hash) en sync con signals usando effect() y allowSignalWrites: true. El effect lee los signals (filtro, orden) y llama a router.navigate con queryParams. O al revés: leer route.queryParams (con toSignal) y escribir en signals; entonces el effect lee la ruta y escribe en tus signals.`,
@@ -147,6 +155,7 @@ export const EFFECTS_CONTENT: Record<string, LessonContent> = {
     checklist: ['URL desde signals: effect + navigate', 'No leer en el effect los signals que actualizas desde la URL'],
     explainLikeIm5: `El ayudante escribe en la barra de direcciones (URL) lo que ve en la pizarra (query). No lee la barra de direcciones para escribir en la pizarra en el mismo effect o se enreda.`,
     challenge: { description: 'Sincroniza un signal search con queryParam "q"; al cargar la página lee "q" y pone search; al cambiar search actualiza la URL.', hint: 'Un effect para URL → signal; otro para signal → URL (sin leer el que escribe).' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-9': {
     definition: `Para evitar loops: (1) No escribas en un signal que el effect lee. (2) Si necesitas escribir, usa allowSignalWrites pero escribe solo en signals que el effect no lee. (3) Usa untracked para leer algo "solo para decidir" si no quieres que ese algo dispare el effect. (4) Si escribes en un signal, asegúrate de que esa escritura no vuelva a disparar este effect (no leer ese signal en el effect).`,
@@ -167,6 +176,7 @@ effect(() => count.set(count() + 1));`,
     checklist: ['El effect no escribe en lo que lee', 'Si escribe, ese signal no está en las dependencias'],
     explainLikeIm5: `El ayudante no puede escribir en la misma pizarra que está mirando; si no, mira, escribe, mira otra vez, escribe otra vez y no para. Escribe en otra pizarra que no mire.`,
     challenge: { description: 'Dibuja en un papel: qué signals lee tu effect y en cuáles escribe. Verifica que no haya intersección.', hint: 'Conjunto de dependencias ∩ conj. de escritura = ∅' },
+    sources: [SOURCES.apiEffect],
   },
   'eff-10': {
     definition: `Resumen effects: (1) effect() para side effects (persistir, log, navegar). (2) computed() para valores derivados; no uses effect para "calcular algo". (3) Cleanup para recursos (timers, suscripciones). (4) allowSignalWrites solo si escribes en signals que el effect no lee. (5) untracked para leer sin suscribir. (6) Evitar loops: no escribir lo que lees.`,
@@ -184,6 +194,7 @@ effect(() => { persist(total()); });`,
     checklist: ['effect = side effect', 'computed = valor derivado', 'Cleanup si creas recursos'],
     explainLikeIm5: `El ayudante (effect) hace cosas cuando cambia la pizarra; el amigo (computed) solo calcula cuando preguntas. No los intercambies.`,
     challenge: { description: 'Escribe en una frase cuándo usar effect y cuándo computed.', hint: 'effect: hacer. computed: calcular.' },
+    sources: [SOURCES.apiEffect, SOURCES.apiComputed],
   },
   'eff-11': {
     definition: 'Practica en el Lab: theme switcher con effect(). Un signal dark; un effect que aplica la clase al document cuando cambia.',
@@ -198,5 +209,6 @@ effect(() => { persist(total()); });`,
     checklist: ['Abrir el Lab Theme switcher', 'Hacer clic y ver el cambio de clase en el documento', 'Entender que es un side effect'],
     explainLikeIm5: 'En el Lab tocas el botón y la página cambia de oscuro a claro porque el effect "escucha" el signal.',
     challenge: { description: 'Completar el lab del theme en Labs.', hint: 'Probar en Lab o pestaña Labs.' },
+    sources: [SOURCES.apiEffect],
   },
 };

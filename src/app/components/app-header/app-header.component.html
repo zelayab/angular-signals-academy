@@ -47,6 +47,21 @@
     <div class="actions">
       <button
         type="button"
+        class="btn btn-outline"
+        (click)="toggleLayout()"
+        [attr.title]="layoutMode() === 'sidebar' ? 'Cambiar a barra de navegación' : 'Cambiar a menú lateral'"
+        [attr.aria-label]="layoutMode() === 'sidebar' ? 'Usar barra de navegación en lugar de menú lateral' : 'Usar menú lateral en lugar de barra'"
+      >
+        @if (layoutMode() === 'sidebar') {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          <span class="hidden-sm">Barra</span>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><path d="M15 8h5"/><path d="M15 12h5"/><path d="M15 16h5"/></svg>
+          <span class="hidden-sm">Menú lateral</span>
+        }
+      </button>
+      <button
+        type="button"
         class="btn"
         [class.btn-primary]="focusMode()"
         [class.glow-primary]="focusMode()"

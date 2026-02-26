@@ -30,4 +30,6 @@ export interface LessonContent {
   checklist: string[];
   explainLikeIm5: string;
   challenge: { description: string; hint: string };
+  /** Fuentes oficiales que sustentan el contenido (angular.dev, RFC, etc.) */
+  sources?: { url: string; label: string }[];
 }

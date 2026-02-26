@@ -1,4 +1,5 @@
 import type { LessonContent } from '../../../models/lesson.model';
+import { SOURCES } from '../../sources.data';
 
 export const ANTI_PATRONES_CONTENT: Record<string, LessonContent> = {
   'anti-1': {
@@ -23,6 +24,7 @@ computed(() => count() * 2);`,
     checklist: ['¿Uso () para leer?', '¿Creo copias al actualizar?', '¿Evito escribir en signals que el effect lee?'],
     explainLikeIm5: `Los errores típicos son: no mirar con () la caja, meter la mano y cambiar la caja por dentro, o hacer que el ayudante (effect) escriba en la caja que él mismo lee (se vuelve loco).`,
     challenge: { description: 'Lista los 5 errores de esta lección y escribe un ejemplo "bien" para cada uno.', hint: 'Revisa la sección de código.' },
+    sources: [SOURCES.guideSignals],
   },
   'anti-2': {
     definition: `Mutación directa: nunca hagas array.push(), array.splice(), obj.prop = x sobre el valor que devuelve un signal. Angular no detecta cambios por referencia si la referencia es la misma. Siempre items.update(list => [...list, x]) o list.filter(...) para crear una nueva referencia.`,
@@ -42,6 +44,7 @@ this.config.update(c => ({ ...c, theme: 'dark' }));`,
     checklist: ['¿Estoy creando una copia nueva?', '¿Uso spread o filter/map en lugar de mutar?'],
     explainLikeIm5: `No cambies el juguete por dentro; trae un juguete nuevo y sustituye la caja entera. Así Angular ve que algo cambió.`,
     challenge: { description: 'Refactoriza código que hace items().splice(i, 1) para usar update + filter.', hint: 'items.update(list => list.filter((_, idx) => idx !== i))' },
+    sources: [SOURCES.apiSignal],
   },
   'anti-3': {
     definition: `Los signals solo pueden leerse dentro de un "contexto de reactividad": en el cuerpo de un computed o effect, o durante la ejecución del template (cuando Angular está evaluando bindings). No los leas en el constructor de un servicio antes de que Angular haya establecido el contexto, ni en callbacks de setTimeout/setInterval sin que formen parte de un effect. Si necesitas leer un signal "fuera" de contexto, usa untracked o asegúrate de estar dentro de un effect.`,
@@ -59,6 +62,7 @@ effect(() => { this.doSomething(this.user()); });`,
     checklist: ['Leer signals en template, computed, effect o métodos llamados desde ellos', 'No leer en constructor ni en callbacks "sueltos"'],
     explainLikeIm5: `Solo puedes mirar la caja cuando estás en la habitación de Angular (template, effect, computed). Si miras desde la calle (constructor), puede que la caja aún no esté.`,
     challenge: { description: 'Mueve una lectura de signal del constructor a un effect que se ejecute al iniciar.', hint: 'effect(() => { ... this.mySignal(); })' },
+    sources: [SOURCES.apiEffect],
   },
   'anti-4': {
     definition: `Loop infinito en effect: el effect lee count() y hace count.set(count() + 1). El effect se ejecuta, lee count, escribe count, Angular detecta cambio y vuelve a ejecutar el effect. Solución: no escribir en un signal que el effect lee. Si necesitas escribir, hazlo en otro signal que el effect no lea, o usa allowSignalWrites con mucho cuidado.`,
@@ -77,6 +81,7 @@ effect(() => { console.log(count()); });
     checklist: ['El effect no escribe en lo que lee', 'Si escribe, ese signal no está en el cuerpo del effect'],
     explainLikeIm5: `El ayudante no puede escribir en la pizarra que está mirando. Si escribe "1", mira "1", escribe "2", mira "2"... nunca para.`,
     challenge: { description: 'Encuentra (o escribe) un effect que cause loop y corrígelo.', hint: 'Quita la escritura o muévela a un signal que no leas.' },
+    sources: [SOURCES.apiEffect],
   },
   'anti-5': {
     definition: `Computed con side effects: no hagas peticiones HTTP, localStorage.setItem, console.log, ni manipulación DOM dentro de un computed. El computed debe ser una función pura de los signals que lee. Si necesitas "hacer algo" cuando cambie un valor, usa effect().`,
@@ -95,6 +100,7 @@ effect(() => localStorage.setItem('x', count()));`,
     checklist: ['Computed = solo lectura de signals y return', 'Cualquier acción = effect'],
     explainLikeIm5: `El amigo que calcula no puede ir a la tienda ni escribir en el cajón. Solo mira la pizarra y te dice un número. Para hacer cosas usa el ayudante (effect).`,
     challenge: { description: 'Busca en tu código un computed que haga algo más que return y muévelo a effect o a un método.', hint: 'Cualquier cosa que no sea "leer signals y devolver valor".' },
+    sources: [SOURCES.apiComputed, SOURCES.apiEffect],
   },
   'anti-6': {
     definition: `Demasiados signals granulares: tener un signal por cada campo de un formulario (nombre, apellido, email, ...) puede funcionar pero genera mucho boilerplate. Considera un signal de objeto (formState = signal({ nombre, apellido, email })) o FormGroup con valueChanges y toSignal. Equilibrio: granularidad donde necesites re-renders finos; agrupación donde sea un solo "bloque" lógico.`,
@@ -113,6 +119,7 @@ form = signal({ name: '', surname: '' });
     checklist: ['Agrupar lo que se usa junto', 'Granularidad donde el re-render fino importe'],
     explainLikeIm5: `No necesitas una caja por cada lápiz si siempre usas la caja de lápices entera. Pero si una lucecita es independiente, su caja está bien.`,
     challenge: { description: 'Revisa si tienes muchos signals que siempre se actualizan juntos y considera agruparlos.', hint: 'signal({ a, b, c }) o FormGroup.' },
+    sources: [SOURCES.apiSignal],
   },
   'anti-7': {
     definition: `Los signals deben crearse de forma estable: en el cuerpo de la clase del componente o del servicio, o en el constructor. No crees signals dentro de bucles (for, map) ni dentro de condicionales (if) que se ejecuten en cada render. Cada ejecución crearía un signal nuevo y se pierde la referencia reactiva.`,
@@ -132,6 +139,7 @@ count = signal(0);  // una sola vez
     checklist: ['Signals creados una vez (clase o constructor)', 'No crear en funciones que se llaman en cada render'],
     explainLikeIm5: `La caja mágica tiene que estar en un sitio fijo. No puedes crear una caja nueva cada vez que alguien entra; si no, nadie sabe qué caja mirar.`,
     challenge: { description: 'Comprueba que no tienes signal() dentro de un método que se llama desde el template.', hint: 'Busca signal( en métodos.' },
+    sources: [SOURCES.apiSignal],
   },
   'anti-8': {
     definition: `Leer signals en el constructor de un servicio puede ser problemático: el orden de inyección y la inicialización de otros servicios puede hacer que el signal aún no tenga el valor esperado. Si un servicio A inyecta un servicio B y en el constructor de A lees B.someSignal(), B puede no estar listo. Preferir effect() o inicialización en un método que se llame después (ej. desde un componente en ngOnInit).`,
@@ -153,6 +161,7 @@ count = signal(0);  // una sola vez
     checklist: ['No leer signals de otros servicios en constructor', 'Usar effect o llamada diferida'],
     explainLikeIm5: `En el constructor aún no están todas las cajas de los demás. Mejor mirar las cajas cuando ya esté todo (effect o cuando te llamen).`,
     challenge: { description: 'Si tienes un servicio que lee otro signal en constructor, mueve esa lógica a un effect.', hint: 'effect(() => { ... otherService.signal(); })' },
+    sources: [SOURCES.apiEffect],
   },
   'anti-9': {
     definition: `Exponer WritableSignal por error: si un servicio tiene items = signal([]) y lo expone como público, cualquier componente puede hacer items().push(x) (mutación) o items.set(...). Mejor: private items = signal([]); readonly items = this.items.asReadonly(); y métodos addItem, removeItem. Así la API es clara y evitas mutaciones desde fuera.`,
@@ -171,6 +180,7 @@ readonly cartItems = this.items.asReadonly();`,
     checklist: ['Servicios exponen asReadonly()', 'Solo métodos para modificar'],
     explainLikeIm5: `No des la llave de la caja a todo el mundo. Pon un cristal (asReadonly()) para que solo miren; solo tú tienes la llave (métodos del servicio).`,
     challenge: { description: 'Revisa tus servicios: ¿algún signal público tiene .set/.update? Cámbialo a asReadonly().', hint: 'Busca signal( en servicios y que sea readonly sin asReadonly.' },
+    sources: [SOURCES.apiSignal],
   },
   'anti-10': {
     definition: `Checklist anti-patrones: (1) ¿Leo signals con () en template y código? (2) ¿Actualizo arrays/objetos con update/spread, no mutando? (3) ¿Leo signals solo en contexto (template, computed, effect)? (4) ¿Mi effect no escribe en lo que lee? (5) ¿Mis computed no tienen side effects? (6) ¿No tengo demasiados signals granulares sin necesidad? (7) ¿Creo signals solo en clase/constructor? (8) ¿No leo signals de otros en constructor? (9) ¿Expongo asReadonly() en servicios?`,
@@ -187,6 +197,7 @@ readonly cartItems = this.items.asReadonly();`,
     checklist: ['Revisar los 9 puntos periódicamente', 'Documentar en el equipo'],
     explainLikeIm5: `Antes de entregar el trabajo, repasa: ¿miro con ()? ¿No cambio la caja por dentro? ¿El ayudante no escribe en lo que mira? ¿El amigo que calcula no hace trampas?`,
     challenge: { description: 'Imprime o guarda esta checklist y aplícala a un componente tuyo.', hint: 'Los 9 puntos de la definición.' },
+    sources: [SOURCES.guideSignals],
   },
   'anti-11': {
     definition: `Ejemplos vivos de qué no hacer: (1) Mutación: items().push(x) en lugar de update(list => [...list, x]). (2) Loop en effect: effect que lee count() y hace count.set(count() + 1). (3) Side effect en computed: computed que hace fetch() o document.querySelector. (4) Signal en condicional: if (flag) const s = signal(0) crea signal inestable. (5) Exponer writable: servicio que devuelve el signal sin asReadonly(). Cada uno tiene una corrección clara.`,
@@ -207,5 +218,6 @@ effect(() => count.set(count() + 1));
     checklist: ['Revisar mutaciones', 'Revisar effects que escriben lo que leen', 'Revisar computed con I/O', 'Revisar estabilidad de signals', 'Revisar asReadonly() en servicios'],
     explainLikeIm5: 'Estos son los errores que más se cometen. Si ves uno en tu código, cámbialo por la versión buena.',
     challenge: { description: 'Busca en tu código un update() que podría ser una mutación disfrazada.', hint: 'Cualquier .push o .splice dentro de update puede ser sospechoso si no devuelves copia.' },
+    sources: [SOURCES.apiSignal],
   },
 };

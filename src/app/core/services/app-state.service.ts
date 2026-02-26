@@ -10,6 +10,9 @@ export class AppStateService {
   private readonly focusMode = signal(false);
   private readonly sidebarCollapsed = signal(false);
   private readonly darkMode = signal(true);
+  private readonly layoutModeSignal = signal<'sidebar' | 'navbar'>(
+    (typeof localStorage !== 'undefined' && (localStorage.getItem('layoutMode') as 'sidebar' | 'navbar')) || 'sidebar'
+  );
   private readonly selectedLabId = signal<string | null>(null);
   private readonly selectedQuizModuleId = signal<string | null>(null);
   private readonly selectedLessonId = signal<string | null>(null);
@@ -23,6 +26,7 @@ export class AppStateService {
   readonly focus = this.focusMode.asReadonly();
   readonly sidebarCollapsedState = this.sidebarCollapsed.asReadonly();
   readonly dark = this.darkMode.asReadonly();
+  readonly layoutMode = this.layoutModeSignal.asReadonly();
 
   readonly isFocusMode = computed(() => this.focusMode());
 
@@ -60,6 +64,18 @@ export class AppStateService {
 
   toggleDarkMode(): void {
     this.darkMode.update(v => !v);
+  }
+
+  setLayoutMode(mode: 'sidebar' | 'navbar'): void {
+    this.layoutModeSignal.set(mode);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('layoutMode', mode);
+    }
+  }
+
+  toggleLayoutMode(): void {
+    const next = this.layoutModeSignal() === 'sidebar' ? 'navbar' : 'sidebar';
+    this.setLayoutMode(next);
   }
 
   setSelectedLabId(id: string | null): void {

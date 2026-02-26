@@ -4,8 +4,11 @@
     <app-app-header />
 
     <div class="body-row">
-      <app-app-sidebar />
-      <main id="main-content" class="main" [class.focus-mode]="focusMode()" tabindex="-1">
+      @if (layoutMode() === 'sidebar') {
+        <app-app-sidebar />
+      }
+      <div class="main-wrapper" [class.full-width]="layoutMode() === 'navbar'">
+        <main id="main-content" class="main" [class.focus-mode]="focusMode()" tabindex="-1">
         <div class="tab-bar glass">
           <div class="tab-bar-inner">
             <app-mobile-nav />
@@ -26,6 +29,9 @@
             </nav>
           </div>
         </div>
+        @if (layoutMode() === 'navbar') {
+          <app-app-navbar />
+        }
 
         <div class="tab-content">
           @switch (activeTab()) {
@@ -41,6 +47,8 @@
           }
         </div>
       </main>
+      </div>
     </div>
+    <app-app-footer />
   </div>
 </div>
